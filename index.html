@@ -837,27 +837,16 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="projectType" class="form-label">Service / Collaboration Type</label>
-                  <select id="projectType" class="form-control" style="background: #1e1e26; color: #fff;">
-                    <option value="content-strategy">Content Strategy & Editorial Systems</option>
-                    <option value="multi-niche">Multi-Niche Website Content & Growth</option>
-                    <option value="seo-copy">SEO Strategy & High-Impact Copywriting</option>
-                    <option value="brand-story">Brand Storytelling & Narrative Positioning</option>
-                    <option value="book-speaking">Book Collaboration / Psychology Advisory</option>
-                  </select>
+                  <input type="text" id="projectType" class="form-control" maxlength="50" placeholder="e.g. Content Strategy & Editorial Systems" required>
                 </div>
                 <div class="form-group">
                   <label for="timeline" class="form-label">Target Timeline</label>
-                  <select id="timeline" class="form-control" style="background: #1e1e26; color: #fff;">
-                    <option value="immediate">Immediately (Next 1-2 Weeks)</option>
-                    <option value="month">Within 1 Month</option>
-                    <option value="ongoing">Long-term Retainer / Ongoing</option>
-                    <option value="exploratory">Exploratory / Consultation</option>
-                  </select>
+                  <input type="text" id="timeline" class="form-control" maxlength="50" placeholder="e.g. Immediately (Next 1-2 Weeks)" required>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="message" class="form-label">Tell me about your project, goals, or message *</label>
+                <label for="message" class="form-label">Tell me about your project, goals, or message * (10-100 words)</label>
                 <textarea id="message" class="form-control" placeholder="Hi Abinash, we would love to collaborate with you on content strategy for our platform..." required></textarea>
               </div>
 
@@ -960,7 +949,7 @@
   <script>
     (function () {
       // TODO: replace with your own EmailJS public key (from Account > General on emailjs.com)
-      emailjs.init("YOUR_PUBLIC_KEY");
+      emailjs.init("XD7Q8K9a1YnwPkDX2");
 
       var form = document.getElementById("contactForm");
       var submitBtn = form.querySelector("button[type='submit']");
@@ -968,6 +957,18 @@
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
+
+        var messageText = document.getElementById("message").value.trim();
+        var wordCount = messageText.length ? messageText.split(/\s+/).length : 0;
+        if (wordCount < 10) {
+          alert("Please write at least 10 words about your project (currently " + wordCount + ").");
+          return;
+        }
+        if (wordCount > 100) {
+          alert("Please keep your message to 100 words or fewer (currently " + wordCount + ").");
+          return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.innerHTML = "<span>Sending...</span>";
 
@@ -979,13 +980,10 @@
           message: document.getElementById("message").value
         };
 
-        // 1) Sends the enquiry to YOU (abinash.kumar231113@gmail.com, set inside the "Contact Us" template's "To Email" field)
-        // TODO: replace YOUR_SERVICE_ID and YOUR_CONTACT_TEMPLATE_ID
-        emailjs.send("YOUR_SERVICE_ID", "YOUR_CONTACT_TEMPLATE_ID", templateParams)
+        emailjs.send("service_yj2er7g", "template_6t55nkt", templateParams)
           .then(function () {
             // 2) Sends an acknowledgement back to the person who filled the form
-            // TODO: replace YOUR_SERVICE_ID and YOUR_AUTOREPLY_TEMPLATE_ID
-            return emailjs.send("YOUR_SERVICE_ID", "YOUR_AUTOREPLY_TEMPLATE_ID", templateParams);
+            return emailjs.send("service_yj2er7g", "template_7jf8444", templateParams);
           })
           .then(function () {
             submitBtn.innerHTML = "<span>Message Sent ✓</span>";

@@ -955,6 +955,56 @@
   </div>
 
   <!-- Main JavaScript File -->
+  <!-- EmailJS: powers the contact form (sends you a copy + auto-replies to the sender) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function () {
+      // TODO: replace with your own EmailJS public key (from Account > General on emailjs.com)
+      emailjs.init("YOUR_PUBLIC_KEY");
+
+      var form = document.getElementById("contactForm");
+      var submitBtn = form.querySelector("button[type='submit']");
+      var originalBtnHTML = submitBtn.innerHTML;
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "<span>Sending...</span>";
+
+        var templateParams = {
+          from_name: document.getElementById("name").value,
+          from_email: document.getElementById("email").value,
+          project_type: document.getElementById("projectType").value,
+          timeline: document.getElementById("timeline").value,
+          message: document.getElementById("message").value
+        };
+
+        // 1) Sends the enquiry to YOU (abinash.kumar231113@gmail.com, set inside the "Contact Us" template's "To Email" field)
+        // TODO: replace YOUR_SERVICE_ID and YOUR_CONTACT_TEMPLATE_ID
+        emailjs.send("YOUR_SERVICE_ID", "YOUR_CONTACT_TEMPLATE_ID", templateParams)
+          .then(function () {
+            // 2) Sends an acknowledgement back to the person who filled the form
+            // TODO: replace YOUR_SERVICE_ID and YOUR_AUTOREPLY_TEMPLATE_ID
+            return emailjs.send("YOUR_SERVICE_ID", "YOUR_AUTOREPLY_TEMPLATE_ID", templateParams);
+          })
+          .then(function () {
+            submitBtn.innerHTML = "<span>Message Sent ✓</span>";
+            form.reset();
+          })
+          .catch(function (error) {
+            console.error("EmailJS error:", error);
+            submitBtn.innerHTML = "<span>Failed — Try Again</span>";
+          })
+          .finally(function () {
+            setTimeout(function () {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalBtnHTML;
+            }, 3000);
+          });
+      });
+    })();
+  </script>
+
   <script src="js/main.js"></script>
 </body>
 </html>

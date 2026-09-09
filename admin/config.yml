@@ -5,15 +5,54 @@ backend:
   base_url: https://api.netlify.com
   auth_endpoint: auth
 
-publish_mode: editorial_workflow
 media_folder: "assets/uploads"
-public_folder: "/assets/uploads"
+public_folder: "assets/uploads"
 
 site_url: https://peppy-bublanina-b8a53f.netlify.app/
 display_url: https://peppy-bublanina-b8a53f.netlify.app/
-logo_url: /assets/profile.jpg
+logo_url: /assets/profile.png
 
 collections:
+  - name: "beyond_work"
+    label: "✨ Beyond Work — Articles"
+    create: true
+    folder: "content/beyond-work"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Slug (URL identifier)", name: "slug", widget: "string", hint: "e.g. why-discipline-beats-motivation" }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Excerpt (shown on card)", name: "excerpt", widget: "text" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - "Fashion"
+          - "Food"
+          - "Travel"
+          - "Gaming"
+          - "Anime"
+          - "Religion"
+          - "Nationalism"
+          - "Psychology"
+          - "Writing"
+          - "Content strategies"
+          - "Personal Growth"
+          - "Books"
+          - "Life lessons"
+        default: "Psychology"
+      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Status", name: "status", widget: "select", options: ["Published", "Draft"], default: "Published" }
+      - label: "SEO & Keywords"
+        name: "seo"
+        widget: "object"
+        fields:
+          - { label: "SEO Title (max 60 chars)", name: "seoTitle", widget: "string", required: false }
+          - { label: "Meta Description (max 160 chars)", name: "metaDescription", widget: "text", required: false }
+          - { label: "Keywords (comma-separated)", name: "keywords", widget: "string", required: false }
+          - { label: "Social Share Image (OG Image)", name: "ogImage", widget: "image", required: false }
+
   - name: "hero"
     label: "🏠 Homepage — Hero Section"
     files:
@@ -29,9 +68,6 @@ collections:
           - { label: "Primary CTA Link", name: "ctaPrimaryLink", widget: "string", default: "#contact" }
           - { label: "Secondary CTA Text", name: "ctaSecondaryText", widget: "string", default: "View Full Resume" }
           - { label: "Portrait Image", name: "portraitImage", widget: "image" }
-          - { label: "Top Floating Badge Text", name: "badgeTop", widget: "string" }
-          - { label: "Bottom Badge Title", name: "badgeBottomTitle", widget: "string", default: "Available for Projects" }
-          - { label: "Bottom Badge Subtitle", name: "badgeBottomSub", widget: "string" }
 
   - name: "philosophy"
     label: "📖 Homepage — Philosophy Section"
@@ -40,64 +76,15 @@ collections:
         label: "Philosophy Content"
         file: "content/philosophy.json"
         fields:
-          - { label: "Section Tag", name: "sectionTag", widget: "string", default: "01 — The Philosophy" }
+          - { label: "Section Tag", name: "sectionTag", widget: "string", default: "01 / The Philosophy" }
           - { label: "Title", name: "title", widget: "string", default: "More Than a Job Title" }
           - { label: "Subtitle", name: "subtitle", widget: "text" }
           - { label: "Quote", name: "quote", widget: "text" }
           - { label: "Body Paragraph 1", name: "bodyOne", widget: "text" }
           - { label: "Body Paragraph 2", name: "bodyTwo", widget: "text" }
 
-  - name: "practice"
-    label: "⚙️ Homepage — Practice Disciplines"
-    files:
-      - name: "practice"
-        label: "Practice Accordion Items"
-        file: "content/practice.json"
-        fields:
-          - { label: "Section Title", name: "title", widget: "string", default: "A practice built across worlds" }
-          - { label: "Subtitle", name: "subtitle", widget: "text" }
-          - name: "items"
-            label: "Discipline Items"
-            widget: "list"
-            fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Tags", name: "tags", widget: "list", field: { label: "Tag", name: "tag", widget: "string" } }
-
-  - name: "portfolio"
-    label: "💼 Homepage — Selected Work"
-    files:
-      - name: "portfolio"
-        label: "Portfolio Projects"
-        file: "content/portfolio.json"
-        fields:
-          - name: "projects"
-            label: "Projects"
-            widget: "list"
-            fields:
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Live URL", name: "url", widget: "string" }
-              - { label: "Category / Client Tag", name: "category", widget: "string" }
-              - { label: "Filter Tags (comma-separated)", name: "filterTags", widget: "string" }
-              - { label: "Featured Card?", name: "featured", widget: "boolean", default: false }
-
-  - name: "certificates"
-    label: "🏆 Homepage — Honors & Certificates"
-    create: true
-    folder: "content/certificates"
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Issuer", name: "issuer", widget: "string" }
-      - { label: "Date", name: "date", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - { label: "Badge Pill Text", name: "badgePill", widget: "string" }
-      - { label: "Signatory", name: "signatory", widget: "string", required: false }
-      - { label: "Certificate Image", name: "image", widget: "image" }
-      - { label: "Display Order", name: "order", widget: "number", default: 1 }
-
   - name: "books"
-    label: "📚 Homepage — Published Books"
+    label: "📚 Homepage — Books"
     create: true
     folder: "content/books"
     slug: "{{slug}}"
@@ -107,80 +94,26 @@ collections:
       - { label: "Cover Image", name: "cover", widget: "image" }
       - { label: "Summary", name: "summary", widget: "text" }
       - name: "keyThemes"
-        label: "Core Themes / Key Insights"
+        label: "Core Themes"
         widget: "list"
         fields:
           - { label: "Theme Title", name: "themeTitle", widget: "string" }
           - { label: "Theme Description", name: "themeDescription", widget: "text" }
-      - { label: "Purchase / Linktree URL", name: "purchaseLink", widget: "string" }
-      - { label: "Display Order", name: "order", widget: "number", default: 1 }
-      - { label: "Published Badge Text", name: "badge", widget: "string", default: "Published Book" }
-
-  - name: "beyond_work"
-    label: "✨ Beyond Work — Articles"
-    create: true
-    folder: "content/beyond-work"
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    preview_path: "beyond-work/{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Slug (URL)", name: "slug", widget: "string", hint: "e.g. mastering-focus-in-a-distracted-world" }
-      - { label: "Cover Image", name: "coverImage", widget: "image" }
-      - { label: "Excerpt (shown on card)", name: "excerpt", widget: "text" }
-      - { label: "Category", name: "category", widget: "select", options: ["Psychology", "Writing", "Content Strategy", "Personal Growth", "Books", "Life Lessons"] }
-      - { label: "Body", name: "body", widget: "markdown" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Status", name: "status", widget: "select", options: ["Draft", "Published"], default: "Draft" }
-      - label: "SEO & Keywords"
-        name: "seo"
-        widget: "object"
-        fields:
-          - { label: "SEO Title (max 60 chars)", name: "seoTitle", widget: "string" }
-          - { label: "Meta Description (max 160 chars)", name: "metaDescription", widget: "text" }
-          - { label: "Keywords (comma-separated)", name: "keywords", widget: "string" }
-          - { label: "Social Share Image (OG Image)", name: "ogImage", widget: "image", required: false }
-
-  - name: "toolkit"
-    label: "🛠️ Homepage — Toolkit"
-    files:
-      - name: "toolkit"
-        label: "Toolkit Columns"
-        file: "content/toolkit.json"
-        fields:
-          - name: "columns"
-            label: "Capability Columns"
-            widget: "list"
-            fields:
-              - { label: "Column Title", name: "columnTitle", widget: "string" }
-              - { label: "Items", name: "items", widget: "list", field: { label: "Item", name: "item", widget: "string" } }
+      - { label: "Purchase Link", name: "purchaseLink", widget: "string" }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
 
   - name: "footer"
-    label: "🔗 Footer & Social Links"
+    label: "🔗 Global Footer Settings"
     files:
       - name: "footer"
         label: "Footer Settings"
         file: "content/footer.json"
         fields:
           - { label: "Bio Text", name: "bio", widget: "text" }
-          - { label: "Availability Status Text", name: "availabilityText", widget: "string", default: "Available for select collaborations" }
-          - label: "Social Links"
-            name: "socialLinks"
-            widget: "list"
-            fields:
-              - { label: "Platform", name: "platform", widget: "select", options: ["Instagram", "LinkedIn", "Twitter / X", "YouTube", "Threads", "Linktree", "GitHub", "Facebook"] }
-              - { label: "URL", name: "url", widget: "string" }
-          - { label: "Email", name: "email", widget: "string", default: "abinash.kumar231113@gmail.com" }
-          - { label: "Phone", name: "phone", widget: "string", default: "+91 8882828854" }
-          - { label: "Copyright Text", name: "copyrightText", widget: "string", default: "© 2026 Abinash Kumar. Handcrafted with precision. All rights reserved." }
-
-  - name: "settings"
-    label: "⚙️ Global Site Settings"
-    files:
-      - name: "settings"
-        label: "SEO & Meta Defaults"
-        file: "content/settings.json"
-        fields:
-          - { label: "Site Title", name: "siteTitle", widget: "string" }
-          - { label: "Default Meta Description", name: "metaDescription", widget: "text" }
-          - { label: "Default Keywords", name: "keywords", widget: "text" }
-          - { label: "Google Analytics ID (GA4)", name: "gaId", widget: "string", required: false, hint: "e.g. G-XXXXXXX" }
+          - { label: "Availability Text", name: "availabilityText", widget: "string" }
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Phone", name: "phone", widget: "string" }
+          - { label: "LinkedIn URL", name: "linkedin", widget: "string", default: "https://www.linkedin.com/in/abinashkumar07/" }
+          - { label: "Instagram URL", name: "instagram", widget: "string", default: "https://www.instagram.com/abinashsays_/" }
+          - { label: "GitHub URL", name: "github", widget: "string", default: "https://github.com/AbinashKumar07" }
+          - { label: "Linktree URL", name: "linktree", widget: "string", default: "https://linktr.ee/ABINASHKUMAR1" }

@@ -1,8 +1,5 @@
 /**
  * PORTFOLIO APPLICATION JAVASCRIPT
- * Comprehensive interactivity: Theme switcher (Sun -> Half Moon), live website redirection, 
- * book accordion, certificate lightboxes, counters, filters, and resume interactivity.
- * Personalized for Abinash Kumar — Content Strategist & Published Author
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,28 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
   initPortfolioFilters();
   initBookAccordion();
   initCertificatesLightbox();
-  initTeachingAccordion();
-  initContactForm();
   initEmailCopy();
   initBackToTop();
 });
 
-/* --- 1. Dark/Light Theme Switcher (Right of Get in Touch) --- */
 function initThemeToggle() {
   const themeSwitchBtn = document.querySelector('#themeSwitchBtn');
   const thumb = document.querySelector('#themeSwitchThumb');
-  
-  // Check stored theme or default to light
-  const savedTheme = localStorage.getItem('site-theme') || 'light';
+
+  const savedTheme = localStorage.getItem('site-theme') || 'dark';
   applyTheme(savedTheme);
 
   if (themeSwitchBtn) {
-    themeSwitchBtn.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    themeSwitchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       applyTheme(newTheme);
       localStorage.setItem('site-theme', newTheme);
-      showToast(newTheme === 'dark' ? '🌙 Night Mode Activated' : '☀️ Light Mode Activated');
     });
   }
 
@@ -50,7 +43,6 @@ function initThemeToggle() {
   }
 }
 
-/* --- 2. Sticky Navigation & Active Spy --- */
 function initNavbar() {
   const header = document.querySelector('.site-header');
   const navLinks = document.querySelectorAll('.nav-link');
@@ -58,35 +50,37 @@ function initNavbar() {
   const mobileToggle = document.querySelector('.mobile-toggle');
   const navMenu = document.querySelector('.nav-menu');
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
 
-    // Scroll spy (if sections exist on page)
-    let current = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120;
-      const sectionHeight = section.clientHeight;
-      if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-        current = section.getAttribute('id');
+      if (sections.length > 0) {
+        let current = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 140;
+          const sectionHeight = section.clientHeight;
+          if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          const href = link.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            link.classList.remove('active');
+            if (href === `#${current}`) {
+              link.classList.add('active');
+            }
+          }
+        });
       }
     });
+  }
 
-    navLinks.forEach(link => {
-      const href = link.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        link.classList.remove('active');
-        if (href === `#${current}`) {
-          link.classList.add('active');
-        }
-      }
-    });
-  });
-
-  // Mobile menu toggle
   if (mobileToggle && navMenu) {
     mobileToggle.addEventListener('click', () => {
       const isVisible = navMenu.style.display === 'flex';
@@ -99,22 +93,23 @@ function initNavbar() {
         navMenu.style.background = 'var(--bg-card)';
         navMenu.style.flexDirection = 'column';
         navMenu.style.padding = '1.5rem';
-        navMenu.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        navMenu.style.boxShadow = '0 10px 25px rgba(0,0,0,0.4)';
         navMenu.style.gap = '1rem';
       }
     });
   }
 }
 
-/* --- 3. Animated Metrics Counters --- */
 function initCounters() {
   const counterElements = document.querySelectorAll('.metric-number');
+  if (counterElements.length === 0) return;
   let hasAnimated = false;
 
   const animateCounter = (el) => {
     const target = parseInt(el.getAttribute('data-target'), 10);
     const suffix = el.getAttribute('data-suffix') || '';
-    const duration = 2000;
+    if (isNaN(target)) return;
+    const duration = 1800;
     const stepTime = 20;
     const totalSteps = duration / stepTime;
     let currentStep = 0;
@@ -122,13 +117,11 @@ function initCounters() {
     const timer = setInterval(() => {
       currentStep++;
       const progress = currentStep / totalSteps;
-      // Ease out quad
       const currentVal = Math.round(target * (1 - (1 - progress) * (1 - progress)));
-
-      el.innerHTML = `${currentVal}<span class="accent">${suffix}</span>`;
+      el.innerHTML = `${currentVal}${suffix}`;
 
       if (currentStep >= totalSteps) {
-        el.innerHTML = `${target}<span class="accent">${suffix}</span>`;
+        el.innerHTML = `${target}${suffix}`;
         clearInterval(timer);
       }
     }, stepTime);
@@ -141,29 +134,27 @@ function initCounters() {
         counterElements.forEach(el => animateCounter(el));
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.2 });
 
   const metricsSection = document.querySelector('#impact');
-  if (metricsSection) {
-    observer.observe(metricsSection);
-  }
+  if (metricsSection) observer.observe(metricsSection);
 }
 
-/* --- 4. Interactive Orbital Venn Diagram --- */
 function initOrbitDiagram() {
   const nodes = document.querySelectorAll('.orbit-node');
   const centerNode = document.querySelector('.orbit-center-node');
   const descCard = document.querySelector('.orbit-description-card');
+  if (nodes.length === 0 && !centerNode) return;
 
   const nodeDescriptions = {
-    'brand-voice': '<strong>Brand Voice:</strong> Codifying distinctive, unmistakable verbal personas and lexicon systems that stand out across crowded markets.',
-    'narrative': '<strong>Narrative Architecture:</strong> Structuring core company myths, manifestos, and strategic narratives for category leadership.',
-    'editorial': '<strong>Editorial Systems:</strong> Building authoritative thought leadership engines, publications, and multi-niche web assets.',
-    'positioning': '<strong>Positioning:</strong> Identifying white spaces and engineering defensible category positioning statements.',
-    'product-copy': '<strong>Product Copy & SEO:</strong> Crafting high-converting content architectures and high-ranking editorial frameworks.',
-    'cultural': '<strong>Human Psychology:</strong> Aligning content narratives with human psychological drivers and audience behaviour.',
-    'executive': '<strong>Author & Comms:</strong> High-visibility founder communications, strategic essays, and published books.',
-    'center': '<strong>Strategic Core:</strong> The unified center where content strategy, human psychology, and digital growth converge.'
+    'brand-voice': '**Brand Voice:** Codifying distinctive verbal personas and lexicon systems that stand out across crowded markets.',
+    'narrative': '**Narrative Architecture:** Structuring core company myths, manifestos, and strategic narratives for category leadership.',
+    'editorial': '**Editorial Systems:** Building authoritative thought leadership engines, publications, and multi-niche web assets.',
+    'positioning': '**Positioning:** Identifying white spaces and engineering defensible category positioning statements.',
+    'product-copy': '**Product Copy & SEO:** Crafting high-converting content architectures and high-ranking editorial frameworks.',
+    'cultural': '**Human Psychology:** Aligning content narratives with human psychological drivers and audience behaviour.',
+    'executive': '**Author & Comms:** High-visibility founder communications, strategic essays, and published books.',
+    'center': '**Strategic Core:** The unified center where content strategy, human psychology, and digital growth converge.'
   };
 
   nodes.forEach(node => {
@@ -187,23 +178,21 @@ function initOrbitDiagram() {
   }
 }
 
-/* --- 5. Practice Disciplines Accordion --- */
 function initPracticeAccordion() {
   const accordionItems = document.querySelectorAll('.practice-accordion .accordion-item');
+  if (accordionItems.length === 0) return;
 
   accordionItems.forEach(item => {
     const header = item.querySelector('.accordion-header');
+    if (!header) return;
     header.addEventListener('click', () => {
       const isActive = item.classList.contains('active');
-
-      // Close all others
       accordionItems.forEach(other => {
         other.classList.remove('active');
         const content = other.querySelector('.accordion-content');
         if (content) content.style.maxHeight = null;
       });
 
-      // Toggle current
       if (!isActive) {
         item.classList.add('active');
         const content = item.querySelector('.accordion-content');
@@ -214,7 +203,6 @@ function initPracticeAccordion() {
     });
   });
 
-  // Open first item by default
   if (accordionItems.length > 0) {
     const first = accordionItems[0];
     first.classList.add('active');
@@ -225,16 +213,15 @@ function initPracticeAccordion() {
   }
 }
 
-/* --- 6. Selected Work Filtering --- */
 function initPortfolioFilters() {
   const filterBtns = document.querySelectorAll('.filter-btn');
   const cards = document.querySelectorAll('.portfolio-card');
+  if (filterBtns.length === 0 || cards.length === 0) return;
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
       const filter = btn.getAttribute('data-filter').toLowerCase();
 
       cards.forEach(card => {
@@ -257,12 +244,10 @@ function initPortfolioFilters() {
   });
 }
 
-/* --- 7. Book Interactive Accordion --- */
 function initBookAccordion() {
   const bookBox = document.querySelector('#bookInteractiveBox');
   const toggleBtn = document.querySelector('#bookAccordionToggle');
   const body = document.querySelector('#bookAccordionBody');
-
   if (!bookBox || !toggleBtn || !body) return;
 
   toggleBtn.addEventListener('click', () => {
@@ -276,12 +261,10 @@ function initBookAccordion() {
     }
   });
 
-  // Open book details by default
   bookBox.classList.add('expanded');
   body.style.maxHeight = body.scrollHeight + 'px';
 }
 
-/* --- 8. Certificates Lightbox & Verification Modal --- */
 const certificatesData = {
   'cert-unlock-dec': {
     title: 'Certificate of Appreciation — Best Performer of the Month',
@@ -290,7 +273,7 @@ const certificatesData = {
     badge: 'Consecutive Best Performer · Dec 2024',
     signatory: 'Nayanth Kumar Singh (Founder)',
     image: 'assets/certificates/cert_unlockdiscounts_dec.png',
-    description: 'Awarded to Abinash Kumar in recognition of exceptional performance, leadership, teamwork, and outstanding creativity in December 2024, setting a new benchmark for excellence.'
+    description: 'Awarded to Abinash Kumar in recognition of exceptional performance, leadership, teamwork, and outstanding creativity in December 2024.'
   },
   'cert-unlock-nov': {
     title: 'Certificate of Appreciation — Best Performer / Intern of the Month',
@@ -308,7 +291,7 @@ const certificatesData = {
     badge: 'Graduate with Honors · Sep 2022',
     signatory: 'Deepak Chopra (Founder & CEO)',
     image: 'assets/certificates/cert_fea_honors.png',
-    description: 'Certifies that Abinash Kumar has successfully completed FEA\'s rigorous one-year program of English, Computer & Internet Skills, Personality Development, Growth Mindset, Grit, Ethics, Collaboration & Adaptability with Honors.'
+    description: 'Completed FEA\\'s rigorous 1-year program of English, Computer & Internet Skills, Personality Development, Grit, Ethics, and Adaptability with Honors.'
   },
   'cert-fea-commendation': {
     title: 'Letter of Commendation — Volunteer & Service Leadership',
@@ -317,7 +300,7 @@ const certificatesData = {
     badge: '5 Months Volunteer Service',
     signatory: 'Neha Masta (Alumni Coordinator)',
     image: 'assets/certificates/cert_fea_commendation.png',
-    description: 'This is to certify that Abinash Kumar has successfully completed 5 months as a dedicated volunteer with Freedom Employability Academy, commended for outstanding effort, leadership, and commitment to learning and community growth.'
+    description: 'Awarded for 5 months of leadership and service in the FEA Volunteer Program, demonstrating community impact and dedication.'
   }
 };
 
@@ -326,7 +309,6 @@ function initCertificatesLightbox() {
   const modalBody = document.querySelector('#certificateModalBody');
   const closeBtn = document.querySelector('#closeCertificateModal');
   const certCards = document.querySelectorAll('.cert-card');
-
   if (!modal || !modalBody) return;
 
   certCards.forEach(card => {
@@ -334,157 +316,50 @@ function initCertificatesLightbox() {
       const id = card.getAttribute('data-cert-id');
       const cert = certificatesData[id];
       if (!cert) return;
-
       modalBody.innerHTML = `
-        <div style="margin-bottom: 1.5rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-            <span class="section-tag gold" style="margin-bottom: 0;">${cert.badge}</span>
-            <span style="font-size: 0.8125rem; color: var(--text-muted); font-weight: 600;">Verified Credential</span>
-          </div>
-          <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary); line-height: 1.25; margin-top: 0.5rem;">${cert.title}</h2>
-          <p style="font-size: 0.9375rem; color: var(--accent-purple); font-weight: 600;">Issued by ${cert.issuer} · ${cert.date}</p>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-          <img src="${cert.image}" alt="${cert.title}" class="cert-full-view">
-        </div>
-
-        <div style="background: var(--bg-secondary); padding: 1.25rem; border-radius: 16px; border: 1px solid var(--border-light); margin-bottom: 1.5rem;">
-          <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem;">Citation & Description</h4>
-          <p style="font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6;">${cert.description}</p>
-          <div style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-muted);">
-            <strong>Signatory:</strong> ${cert.signatory}
-          </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-          <a href="${cert.image}" target="_blank" download class="btn btn-primary">
-            <span>Download High-Res Certificate</span>
-            <span>↓</span>
-          </a>
-          <button class="btn btn-secondary" onclick="closeModal('certificateModal')">Close Preview</button>
+        <div style="text-align:center;">
+          <img src="${cert.image}" alt="${cert.title}" style="width:100%; max-height:65vh; object-fit:contain; border-radius:12px; margin-bottom:1.25rem;">
+          <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.4rem;">${cert.title}</h3>
+          <p style="color:var(--text-muted); font-size:0.875rem; margin-bottom:0.75rem;">Issued by ${cert.issuer} · ${cert.date}</p>
+          <p style="color:var(--text-secondary); font-size:0.9375rem; line-height:1.6;">${cert.description}</p>
         </div>
       `;
-
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('active'), 10);
     });
   });
 
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => closeModal('certificateModal'));
-  }
+  const closeModal = () => {
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+  };
 
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal('certificateModal');
+    if (e.target === modal) closeModal();
   });
 }
 
-function closeModal(modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-}
-
-/* --- 9. Teaching Programs Action --- */
-function initTeachingAccordion() {
-  const items = document.querySelectorAll('.teaching-item');
-  items.forEach(item => {
-    item.addEventListener('click', () => {
-      const title = item.querySelector('.teaching-item-title').textContent;
-      showToast(`Inquiring for: ${title}`);
-      const contactSection = document.querySelector('#contact');
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-        const noteInput = document.querySelector('#projectType');
-        if (noteInput) noteInput.value = 'consultation';
+function initEmailCopy() {
+  const copyBtn = document.querySelector('#copyEmailBtn');
+  if (!copyBtn) return;
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText('abinash.kumar231113@gmail.com').then(() => {
+      const span = copyBtn.querySelector('span:last-child');
+      if (span) {
+        const orig = span.textContent;
+        span.textContent = '✓ Copied to clipboard!';
+        setTimeout(() => span.textContent = orig, 2500);
       }
     });
   });
 }
 
-/* --- 10. Interactive Content Strategy Contact Form --- */
-function initContactForm() {
-  const form = document.querySelector('#contactForm');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = form.querySelector('#name').value.trim();
-    const email = form.querySelector('#email').value.trim();
-    const message = form.querySelector('#message').value.trim();
-
-    if (!name || !email || !message) {
-      showToast('⚠️ Please fill out all required fields.');
-      return;
-    }
-
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = 'Sending Message...';
-    submitBtn.disabled = true;
-
-    setTimeout(() => {
-      submitBtn.innerHTML = '✓ Message Sent to Abinash!';
-      submitBtn.style.background = '#10b981';
-      showToast(`Thank you ${name}! Your inquiry has been sent to abinash.kumar231113@gmail.com.`);
-      form.reset();
-
-      setTimeout(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.style.background = '';
-        submitBtn.disabled = false;
-      }, 3500);
-    }, 1200);
-  });
-}
-
-/* --- 11. Email Copy to Clipboard with Toast --- */
-function initEmailCopy() {
-  const copyBtn = document.querySelector('#copyEmailBtn');
-  if (!copyBtn) return;
-
-  copyBtn.addEventListener('click', () => {
-    const email = 'abinash.kumar231113@gmail.com';
-    navigator.clipboard.writeText(email).then(() => {
-      showToast('✓ Copied abinash.kumar231113@gmail.com to clipboard!');
-    }).catch(() => {
-      showToast('Email: abinash.kumar231113@gmail.com');
-    });
-  });
-}
-
-/* --- 12. Back to Top --- */
 function initBackToTop() {
-  const backToTopBtn = document.querySelector('#backToTopBtn');
-  if (!backToTopBtn) return;
-
-  backToTopBtn.addEventListener('click', (e) => {
+  const backBtn = document.querySelector('#backToTopBtn');
+  if (!backBtn) return;
+  backBtn.addEventListener('click', (e) => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-}
-
-/* --- Toast Notification Utility --- */
-function showToast(message) {
-  let toastContainer = document.querySelector('.toast-container');
-  if (!toastContainer) {
-    toastContainer = document.createElement('div');
-    toastContainer.className = 'toast-container';
-    document.body.appendChild(toastContainer);
-  }
-
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerHTML = message;
-  toastContainer.appendChild(toast);
-
-  setTimeout(() => toast.classList.add('show'), 10);
-
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 400);
-  }, 3200);
 }

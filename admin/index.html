@@ -4,7 +4,74 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Abinash Kumar — Content Admin Panel</title>
-  <link rel="icon" type="image/png" href="../assets/profile.jpg" />
+  <link rel="icon" type="image/png" href="../assets/profile.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #13131c;
+      --border-dark: #232332;
+      --text-main: #f8fafc;
+      --accent: #7952e8;
+      --accent-hover: #9333ea;
+    }
+    body {
+      background-color: var(--bg-dark) !important;
+      color: var(--text-main) !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+      margin: 0;
+      padding: 0;
+    }
+    #nc-root { background-color: var(--bg-dark) !important; }
+    #nc-root header, #nc-root [class*="AppHeader"] {
+      background-color: #101017 !important;
+      border-bottom: 1px solid var(--border-dark) !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+    }
+    #nc-root aside, #nc-root [class*="SidebarContainer"] {
+      background-color: #0e0e14 !important;
+      border-right: 1px solid var(--border-dark) !important;
+    }
+    #nc-root [class*="Card"] {
+      background-color: var(--bg-card) !important;
+      border: 1px solid var(--border-dark) !important;
+      border-radius: 12px !important;
+      color: var(--text-main) !important;
+    }
+    #nc-root input, #nc-root textarea, #nc-root select {
+      background-color: #171722 !important;
+      border: 1px solid var(--border-dark) !important;
+      color: #ffffff !important;
+      border-radius: 8px !important;
+    }
+    #nc-root input:focus, #nc-root textarea:focus, #nc-root select:focus {
+      border-color: var(--accent) !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(121, 82, 232, 0.25) !important;
+    }
+    #nc-root [class*="ControlPaneContainer"] {
+      background-color: var(--bg-card) !important;
+      border: 1px solid var(--border-dark) !important;
+    }
+    #nc-root [class*="PreviewPaneContainer"] {
+      background-color: #0d0d12 !important;
+      border-left: 1px solid var(--border-dark) !important;
+    }
+    #nc-root [class*="EditorContainer"] { background-color: var(--bg-dark) !important; }
+    #nc-root [class*="StyledButton-default-gray"] {
+      background-color: #242434 !important;
+      color: #f8fafc !important;
+    }
+    #nc-root [class*="StyledButton-default-green"], #nc-root [class*="StyledButton-default-blue"] {
+      background-color: var(--accent) !important;
+      color: #ffffff !important;
+    }
+    #nc-root [class*="StyledButton-default-green"]:hover, #nc-root [class*="StyledButton-default-blue"]:hover {
+      background-color: var(--accent-hover) !important;
+    }
+  </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>

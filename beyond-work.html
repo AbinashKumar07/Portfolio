@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="pageTitle">Beyond Work — Abinash Kumar | Essays on Psychology, Writing & Life</title>
-<meta name="description" id="pageDescription" content="Beyond the client work — original essays and articles by Abinash Kumar on human psychology, content strategy, personal growth, and the craft of writing.">
-<meta name="keywords" id="pageKeywords" content="Abinash Kumar, Beyond Work, Human Psychology, Writing Essays, Content Strategy Articles, Personal Growth">
+<title id="pageTitle">Beyond Work — Abinash Kumar | Essays, Ideas & Insights</title>
+<meta name="description" id="pageDescription" content="Outside client work — original essays and articles by Abinash Kumar spanning psychology, writing, culture, books, and life lessons.">
+<meta name="keywords" id="pageKeywords" content="Abinash Kumar, Beyond Work, Psychology, Writing, Content Strategies, Books, Life Lessons, Culture">
 <meta property="og:type" content="website">
 <meta property="og:title" id="ogTitle" content="Beyond Work — Abinash Kumar">
-<meta property="og:description" id="ogDescription" content="Original essays and articles on psychology, writing, and life by Abinash Kumar.">
-<meta property="og:image" id="ogImage" content="../assets/profile.jpg">
-<link rel="canonical" id="canonicalLink" href="https://abinashkumar07.github.io/Portfolio/beyond-work.html">
+<meta property="og:description" id="ogDescription" content="Essays, ideas, and perspectives by Abinash Kumar.">
+<meta property="og:image" id="ogImage" content="assets/profile.png">
+<link rel="canonical" id="canonicalLink" href="https://peppy-bublanina-b8a53f.netlify.app/beyond-work.html">
 <link rel="icon" type="image/png" href="assets/profile.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,25 +20,25 @@
 <style>
   .bw-hero { padding-top: 8.5rem; padding-bottom: 3rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border-light); }
   .bw-hero-title { font-size: clamp(2.5rem, 5vw, 3.75rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
-  .bw-hero-sub { font-size: 1.125rem; color: var(--text-secondary); max-width: 640px; line-height: 1.65; }
+  .bw-hero-sub { font-size: 1.125rem; color: var(--text-secondary); max-width: 680px; line-height: 1.65; }
   .bw-filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 2rem; }
   .bw-filter-btn { padding: 0.55rem 1.2rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-card); color: var(--text-secondary); transition: all var(--transition-fast); cursor: pointer; }
   .bw-filter-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
   .bw-filter-btn.active { background: var(--accent-purple); border-color: var(--accent-purple); color: #fff; }
-  .bw-grid-section { padding: 4rem 0 6rem; }
+  .bw-grid-section { padding: 4rem 0 6rem; min-height: 400px; }
   .bw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
   .bw-card { background: var(--bg-card); border: 1.5px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; transition: all var(--transition-normal); display: flex; flex-direction: column; text-decoration: none; color: inherit; cursor: pointer; }
   .bw-card:hover { border-color: var(--accent-purple); box-shadow: 0 10px 28px rgba(121, 82, 232, 0.15); transform: translateY(-4px); }
-  .bw-card-img-wrap { height: 200px; overflow: hidden; background: var(--bg-secondary); }
+  .bw-card-img-wrap { height: 210px; overflow: hidden; background: var(--bg-secondary); }
   .bw-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-normal); }
   .bw-card:hover .bw-card-img { transform: scale(1.05); }
   .bw-card-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
   .bw-card-category { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-purple); margin-bottom: 0.6rem; }
-  .bw-card-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.6rem; line-height: 1.3; }
+  .bw-card-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.6rem; line-height: 1.3; color: var(--text-primary); }
   .bw-card-excerpt { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem; flex-grow: 1; }
   .bw-card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); padding-top: 1rem; border-top: 1px solid var(--border-subtle); }
-  .bw-empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
-  .bw-empty-state h3 { font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .bw-empty-state { text-align: center; padding: 5rem 1rem; color: var(--text-muted); }
+  .bw-empty-state h3 { font-size: 1.4rem; color: var(--text-primary); margin-bottom: 0.5rem; font-weight: 700; }
   @media (max-width: 900px) { .bw-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px) { .bw-grid { grid-template-columns: 1fr; } }
 </style>
@@ -62,7 +62,7 @@
       <div class="theme-switch-wrap" title="Toggle Light / Dark Mode">
         <button class="theme-switch-btn" id="themeSwitchBtn" aria-label="Toggle Theme">
           <span class="switch-icon-sun">☀️</span><span class="switch-icon-moon">🌙</span>
-          <div class="theme-switch-thumb" id="themeSwitchThumb"></div>
+          <div class="theme-switch-thumb" id="themeSwitchThumb">☀️</div>
         </button>
       </div>
       <button class="mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
@@ -75,15 +75,22 @@
     <div class="container">
       <span class="section-tag">Essays &amp; Articles</span>
       <h1 class="bw-hero-title">Beyond Work</h1>
-      <p class="bw-hero-sub">Outside client work and case studies — this is where I write about human psychology, the craft of writing, content strategy, and the lessons behind the work. Published straight from my content admin panel.</p>
+      <p class="bw-hero-sub">Exploring the intersections of culture, psychology, writing, and the craft of living with clarity and intent.</p>
       <div class="bw-filter-row" id="bwFilterRow">
         <button class="bw-filter-btn active" data-filter="all">All</button>
+        <button class="bw-filter-btn" data-filter="Fashion">Fashion</button>
+        <button class="bw-filter-btn" data-filter="Food">Food</button>
+        <button class="bw-filter-btn" data-filter="Travel">Travel</button>
+        <button class="bw-filter-btn" data-filter="Gaming">Gaming</button>
+        <button class="bw-filter-btn" data-filter="Anime">Anime</button>
+        <button class="bw-filter-btn" data-filter="Religion">Religion</button>
+        <button class="bw-filter-btn" data-filter="Nationalism">Nationalism</button>
         <button class="bw-filter-btn" data-filter="Psychology">Psychology</button>
         <button class="bw-filter-btn" data-filter="Writing">Writing</button>
-        <button class="bw-filter-btn" data-filter="Content Strategy">Content Strategy</button>
+        <button class="bw-filter-btn" data-filter="Content strategies">Content strategies</button>
         <button class="bw-filter-btn" data-filter="Personal Growth">Personal Growth</button>
         <button class="bw-filter-btn" data-filter="Books">Books</button>
-        <button class="bw-filter-btn" data-filter="Life Lessons">Life Lessons</button>
+        <button class="bw-filter-btn" data-filter="Life lessons">Life lessons</button>
       </div>
     </div>
   </section>
@@ -92,17 +99,97 @@
     <div class="container">
       <div class="bw-grid" id="bwGrid"></div>
       <div class="bw-empty-state" id="bwEmptyState" style="display:none;">
-        <h3>New essays are on the way.</h3>
-        <p>Publish your first article from the admin panel at <code>/admin</code> — it will appear here automatically.</p>
+        <h3>Essays &amp; Articles Coming Soon</h3>
+        <p>New pieces and longform thoughts are currently being written.</p>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="site-footer" id="siteFooterInclude"></footer>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        
+        <!-- Col 1: Brand & Bio -->
+        <div class="footer-brand">
+          <a href="#" class="brand-logo">
+            <img src="assets/profile.png" alt="Abinash Kumar" class="brand-avatar">
+            <span>ABINASH KUMAR</span>
+          </a>
+          <p class="footer-bio">
+            Content Strategist, Narrative Architect, and Author of <em>"Human Psychology &amp; Behaviour"</em>.
+          </p>
+          <div style="margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: #10b981;">
+            <span class="status-dot"></span>
+            <span>Available for select collaborations</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Published Book Showcase -->
+        <div>
+          <h4 class="footer-col-title">Published Book</h4>
+          <a href="https://linktr.ee/ABINASHKUMAR1" target="_blank" rel="noopener noreferrer" class="footer-book-card">
+            <img src="assets/book_cover.png" alt="Book Cover" class="footer-book-thumb">
+            <div class="footer-book-info">
+              <h5>Human Psychology &amp; Behaviour</h5>
+              <p>Explore on Linktree ↗</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Col 3: Navigation -->
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <div class="footer-links">
+            <a href="#hero" class="footer-link">Home</a>
+            <a href="#philosophy" class="footer-link">Philosophy</a>
+            <a href="#practice" class="footer-link">Practice</a>
+            <a href="#work" class="footer-link">Portfolio</a>
+            <a href="#certificates" class="footer-link">Honors &amp; Certifications</a>
+            <a href="beyond-work.html" class="footer-link">Beyond Work</a>
+            <a href="#book" class="footer-link">Published Book</a>
+            <a href="resume.html" class="footer-link">Resume &amp; CV</a>
+          </div>
+        </div>
+
+        <!-- Col 4: Connect & Social Connectors -->
+        <div>
+          <h4 class="footer-col-title">Connect</h4>
+          <div class="footer-links">
+            <a href="https://linktr.ee/ABINASHKUMAR1" target="_blank" rel="noopener noreferrer" class="footer-link" style="color: #a78bfa; font-weight: 700;">Linktree (Book &amp; Links) ↗</a>
+            <a href="mailto:abinash.kumar231113@gmail.com" class="footer-link">Email Abinash ↗</a>
+            <a href="tel:+918882828854" class="footer-link">Phone: +91 8882828854 ↗</a>
+            <a href="resume.html" class="footer-link">View Full Resume ↗</a>
+            <div class="footer-social-row" aria-label="Social Profiles">
+              <a href="https://www.linkedin.com/in/abinashkumar07/" target="_blank" rel="noopener noreferrer" class="footer-social-icon" title="LinkedIn" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+              </a>
+              <a href="https://www.instagram.com/abinashsays_/" target="_blank" rel="noopener noreferrer" class="footer-social-icon" title="Instagram" aria-label="Instagram">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="https://github.com/AbinashKumar07" target="_blank" rel="noopener noreferrer" class="footer-social-icon" title="GitHub" aria-label="GitHub">
+                <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+              </a>
+              <a href="https://linktr.ee/ABINASHKUMAR1" target="_blank" rel="noopener noreferrer" class="footer-social-icon" title="Linktree" aria-label="Linktree">
+                <svg viewBox="0 0 24 24"><path d="M13.51 5.92L17.7 1.73l2.83 2.83-4.19 4.19H22v4h-5.66l4.19 4.19-2.83 2.83-4.19-4.19V22h-4v-6.42l-4.19 4.19-2.83-2.83 4.19-4.19H2v-4h5.66L3.47 4.56l2.83-2.83 4.19 4.19V0h4v5.92h-.98z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Abinash Kumar. Handcrafted with precision. All rights reserved.</div>
+        <a href="#" class="back-to-top-btn" id="backToTopBtn">
+          <span>Back to top</span>
+          <span>↑</span>
+        </a>
+      </div>
+    </div>
+  </footer>
 
 <script src="js/main.js"></script>
 <script src="js/beyond-work.js"></script>
-<script src="js/footer-loader.js"></script>
 </body>
 </html>

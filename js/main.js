@@ -319,7 +319,6 @@ function initBookAccordion() {
   body.style.maxHeight = body.scrollHeight + 'px';
 }
 
-/* --- 9. Certificates Lightbox --- */
 const certificatesData = {
   'cert-unlock-dec': {
     title: 'Certificate of Appreciation — Best Performer of the Month',

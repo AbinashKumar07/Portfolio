@@ -184,15 +184,6 @@
       background: var(--accent-hover);
       transform: translateY(-2px);
     }
-    .btn-schedule {
-      background: #d97706;
-      color: #ffffff;
-      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
-    }
-    .btn-schedule:hover {
-      background: #b45309;
-      transform: translateY(-2px);
-    }
     .btn-secondary {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -234,12 +225,71 @@
       font-family: inherit;
       transition: border-color 0.2s ease;
     }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
+    .form-input:focus, .form-select:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
-    .form-textarea { min-height: 280px; resize: vertical; line-height: 1.7; }
+
+    /* Rich WYSIWYG Editor Toolbar */
+    .rich-editor-wrap {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: #0d0d14;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .rich-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.6rem 0.75rem;
+      background: #14141e;
+      border-bottom: 1px solid var(--border);
+    }
+    .tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      padding: 0.35rem 0.6rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .tool-btn:hover {
+      background: rgba(121, 82, 232, 0.2);
+      color: #ffffff;
+      border-color: rgba(121, 82, 232, 0.3);
+    }
+    .tool-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+    .rich-content-editable {
+      min-height: 340px;
+      padding: 1.25rem 1.5rem;
+      color: #ffffff;
+      font-size: 1rem;
+      line-height: 1.8;
+      outline: none;
+      overflow-y: auto;
+    }
+    .rich-content-editable:empty:before {
+      content: attr(placeholder);
+      color: var(--text-muted);
+    }
+    .rich-content-editable h2 { font-size: 1.5rem; margin: 1.5rem 0 0.75rem; color: #ffffff; }
+    .rich-content-editable h3 { font-size: 1.25rem; margin: 1.25rem 0 0.5rem; color: #ffffff; }
+    .rich-content-editable p { margin-bottom: 1rem; }
+    .rich-content-editable a { color: var(--accent); text-decoration: underline; }
+    .rich-content-editable ul { padding-left: 1.5rem; margin-bottom: 1rem; }
 
     /* Schedule Time Split Controls */
     .schedule-grid {
@@ -392,7 +442,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <span id="syncStatusIndicator" style="color: #10b981;">● Studio Ready</span>
+      <span id="syncStatusIndicator" style="color: #10b981;">● Ready</span>
       <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.75rem;">Log Out</button>
     </div>
   </aside>
@@ -436,7 +486,7 @@
       <form id="articleForm" onsubmit="publishArticleDirectly(event)">
         <div class="editor-grid">
           
-          <!-- Left Column -->
+          <!-- Left Column: Headline, Excerpt, WYSIWYG Editor -->
           <div>
             <div class="form-panel">
               <div class="form-group">
@@ -450,21 +500,39 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">Article Summary / Excerpt (1-2 Sentences) *</label>
-                <textarea id="postExcerpt" class="form-input" style="min-height: 85px;" placeholder="A distilled perspective on cognitive clarity and mental sovereignty..." required></textarea>
+                <label class="form-label">Article Summary / Card Excerpt (1-2 Sentences) *</label>
+                <textarea id="postExcerpt" class="form-input" style="min-height: 80px;" placeholder="A distilled perspective on cognitive clarity and mental sovereignty..." required></textarea>
               </div>
 
+              <!-- Inbuilt WYSIWYG Text Editor with Formatting Toolbar -->
               <div class="form-group">
-                <label class="form-label">Full Markdown Body *</label>
-                <textarea id="postBody" class="form-textarea" placeholder="Write your full essay here with markdown headers (##), paragraphs, and bullet points..." required></textarea>
+                <label class="form-label">Article Content (WYSIWYG Rich Formatter) *</label>
+                <div class="rich-editor-wrap">
+                  <div class="rich-toolbar">
+                    <button type="button" class="tool-btn" onclick="formatDoc('bold')" title="Bold"><strong>B</strong></button>
+                    <button type="button" class="tool-btn" onclick="formatDoc('italic')" title="Italic"><em>I</em></button>
+                    <button type="button" class="tool-btn" onclick="formatDoc('underline')" title="Underline"><u>U</u></button>
+                    <div class="tool-divider"></div>
+                    <button type="button" class="tool-btn" onclick="formatBlock('h2')" title="Main Section Heading">H2</button>
+                    <button type="button" class="tool-btn" onclick="formatBlock('h3')" title="Sub-Heading">H3</button>
+                    <button type="button" class="tool-btn" onclick="formatBlock('p')" title="Paragraph">P</button>
+                    <div class="tool-divider"></div>
+                    <button type="button" class="tool-btn" onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
+                    <button type="button" class="tool-btn" onclick="formatDoc('insertOrderedList')" title="Numbered List">1. List</button>
+                    <button type="button" class="tool-btn" onclick="addLink()" title="Insert Link">🔗 Link</button>
+                    <button type="button" class="tool-btn" onclick="formatDoc('removeFormat')" title="Clear Formatting">🧹 Clear</button>
+                  </div>
+                  <div id="richEditor" class="rich-content-editable" contenteditable="true" placeholder="Start typing your essay here with headings, links, bold text, and takeaways..."></div>
+                </div>
               </div>
+
             </div>
           </div>
 
           <!-- Right Column -->
           <div>
             <div class="form-panel">
-              <h3 style="font-size: 0.95rem; margin-bottom: 1.25rem;">Publishing &amp; Scheduling Controls</h3>
+              <h3 style="font-size: 0.95rem; margin-bottom: 1.25rem;">Publishing &amp; Accurate Scheduling</h3>
               
               <div class="form-group">
                 <label class="form-label">Category</label>
@@ -497,15 +565,17 @@
                 </div>
               </div>
 
-              <!-- Inbuilt Calendar & Time Picker -->
+              <!-- Exact Local Date & Time Matcher -->
               <div class="form-group">
                 <label class="form-label">Publication / Schedule Date &amp; Time</label>
                 <div class="schedule-grid">
                   <input type="date" id="postDate" class="form-input" required>
                   <input type="time" id="postTime" class="form-input" required>
                 </div>
-                <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 0.35rem;">
-                  Setting a future date &amp; time automatically tags the article as <strong>Scheduled</strong>.
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                  <button type="button" onclick="setCurrentLocalTime()" class="btn btn-secondary" style="padding: 0.35rem 0.65rem; font-size: 0.6875rem;">
+                    ⏱️ Set to Right Now
+                  </button>
                 </div>
               </div>
 
@@ -546,7 +616,7 @@
       <div class="form-panel">
         <h3 style="margin-bottom: 0.75rem;">📅 Scheduled Queue &amp; Timeline</h3>
         <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7; margin-bottom: 1.5rem;">
-          Articles with future calendar timestamps will be held in your scheduled pipeline and dynamically go live as their release time arrives.
+          Articles with future timestamps are queued here and appear dynamically as their publication time arrives.
         </p>
 
         <div id="scheduleTimelineList">
@@ -560,12 +630,12 @@
       <div class="form-panel" style="max-width: 680px;">
         <h3 style="margin-bottom: 0.75rem;">GitHub 1-Click Sync Key</h3>
         <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7; margin-bottom: 1.5rem;">
-          Paste your GitHub Personal Access Token with <strong>Contents: Read &amp; Write</strong> access. This is stored only in your local browser storage to commit articles straight to your repository without any third-party app.
+          Paste your GitHub Personal Access Token with <strong>Contents: Read &amp; Write</strong> access.
         </p>
 
         <div class="form-group">
           <label class="form-label">GitHub Token</label>
-          <input type="password" id="ghTokenInput" class="form-input" placeholder="github_pat_..." autocomplete="off">
+          <input type="password" id="ghTokenInput" class="form-input" placeholder="ghp_..." autocomplete="off">
         </div>
 
         <button onclick="saveGitHubToken()" class="btn btn-primary">
@@ -605,7 +675,7 @@
         document.getElementById('authOverlay').style.display = 'none';
         loadLiveArticles();
       } else {
-        alert('Invalid credentials. Please enter your configured username and password.');
+        alert('Invalid credentials.');
       }
     }
 
@@ -634,10 +704,19 @@
       document.getElementById('viewTitle').textContent = titles[viewName] || 'Editorial Studio';
     }
 
-    // Auto slug, today's date and current time
-    const now = new Date();
-    document.getElementById('postDate').value = now.toISOString().split('T')[0];
-    document.getElementById('postTime').value = now.toTimeString().slice(0, 5);
+    // --- 3. ACCURATE LOCAL TIME HELPER ---
+    function setCurrentLocalTime() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+
+      document.getElementById('postDate').value = `${year}-${month}-${day}`;
+      document.getElementById('postTime').value = `${hours}:${minutes}`;
+    }
+    setCurrentLocalTime();
 
     document.getElementById('postTitle').addEventListener('input', (e) => {
       const slugInput = document.getElementById('postSlug');
@@ -649,7 +728,21 @@
       document.getElementById('postSlug').dataset.manual = 'true';
     });
 
-    // --- 3. DEVICE IMAGE PICKER ---
+    // --- 4. WYSIWYG FORMATTING COMMANDS ---
+    function formatDoc(cmd, val = null) {
+      document.execCommand(cmd, false, val);
+      document.getElementById('richEditor').focus();
+    }
+    function formatBlock(tag) {
+      document.execCommand('formatBlock', false, tag);
+      document.getElementById('richEditor').focus();
+    }
+    function addLink() {
+      const url = prompt('Enter the link destination URL: (e.g. https://example.com)');
+      if (url) formatDoc('createLink', url);
+    }
+
+    // --- 5. DEVICE IMAGE PICKER ---
     function handleImagePick(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -664,7 +757,7 @@
       reader.readAsDataURL(file);
     }
 
-    // --- 4. GITHUB DIRECT PUBLISHER WITH SCHEDULING ---
+    // --- 6. GITHUB DIRECT 2-STEP PUBLISHER (Commits article JSON + Updates Manifest Index) ---
     function saveGitHubToken() {
       const token = document.getElementById('ghTokenInput').value.trim();
       if (!token) return alert('Please paste a valid token.');
@@ -675,6 +768,11 @@
 
     async function publishArticleDirectly(e) {
       e.preventDefault();
+      const editorHTML = document.getElementById('richEditor').innerHTML.trim();
+      if (!editorHTML) {
+        return alert('Please write some content in the article body before publishing.');
+      }
+
       const btn = document.getElementById('publishBtn');
       btn.disabled = true;
       btn.innerHTML = '<span>⏳</span><span>Publishing to GitHub...</span>';
@@ -683,7 +781,6 @@
       const slug = document.getElementById('postSlug').value;
       const category = document.getElementById('postCategory').value;
       const excerpt = document.getElementById('postExcerpt').value;
-      const body = document.getElementById('postBody').value;
       const date = document.getElementById('postDate').value;
       const time = document.getElementById('postTime').value;
       const fullDateTime = `${date}T${time}:00`;
@@ -700,7 +797,7 @@
         slug,
         category,
         excerpt,
-        body,
+        body: editorHTML,
         coverImage: base64ImageString || 'assets/profile.png',
         date: fullDateTime,
         status,
@@ -712,8 +809,27 @@
       if (token) {
         try {
           const repo = 'AbinashKumar07/Portfolio';
+          
+          // 1. Commit the individual article JSON
           const filePath = `content/beyond-work/${slug}.json`;
           const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(articleObj, null, 2))));
+
+          let existingSha = null;
+          try {
+            const check = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+              headers: { 'Authorization': `token ${token}` }
+            });
+            if (check.ok) {
+              const data = await check.json();
+              existingSha = data.sha;
+            }
+          } catch(err) {}
+
+          const putBody = {
+            message: `feat(article): ${status.toLowerCase()} ${title}`,
+            content: contentBase64
+          };
+          if (existingSha) putBody.sha = existingSha;
 
           const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
             method: 'PUT',
@@ -721,38 +837,58 @@
               'Authorization': `token ${token}`,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              message: `feat(article): ${status.toLowerCase()} ${title}`,
-              content: contentBase64
-            })
+            body: JSON.stringify(putBody)
           });
 
-          if (!res.ok) throw new Error('GitHub commit failed. Check token permissions.');
-          showToast(status === 'Scheduled' ? 'Article scheduled in calendar!' : 'Article published live to GitHub!');
+          if (!res.ok) throw new Error('GitHub article write failed.');
+
+          // 2. Fetch and update the master index.json manifest so Beyond Work displays immediately
+          let currentArticles = [];
+          let indexSha = null;
+          try {
+            const indexCheck = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+              headers: { 'Authorization': `token ${token}` }
+            });
+            if (indexCheck.ok) {
+              const indexData = await indexCheck.json();
+              indexSha = indexData.sha;
+              currentArticles = JSON.parse(decodeURIComponent(escape(atob(indexData.content))));
+            }
+          } catch(err) {}
+
+          // Filter out existing slug if updating
+          currentArticles = currentArticles.filter(a => a.slug !== slug);
+          currentArticles.unshift(articleObj);
+
+          const newIndexBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentArticles, null, 2))));
+          const indexPutBody = {
+            message: `chore: update beyond-work manifest for ${slug}`,
+            content: newIndexBase64
+          };
+          if (indexSha) indexPutBody.sha = indexSha;
+
+          await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(indexPutBody)
+          });
+
+          showToast('Article published live to GitHub! Netlify will show it in 30s.');
           loadLiveArticles();
           switchView('articles');
         } catch (err) {
-          alert(`Publishing Error: ${err.message}. Exporting JSON backup.`);
-          exportBackupJSON(articleObj, slug);
+          alert(`Publishing Error: ${err.message}. Please verify your GitHub token permissions.`);
         }
       } else {
-        exportBackupJSON(articleObj, slug);
-        alert('Article downloaded as JSON! Tip: Add your GitHub Sync Key in the sidebar to publish live with 1-click.');
-        showToast('Article JSON generated.');
+        alert('Please save your GitHub Sync Key in the sidebar first to publish directly.');
+        switchView('token');
       }
 
       btn.disabled = false;
       btn.innerHTML = '<span>🚀</span><span>Publish Live to Website</span>';
-    }
-
-    function exportBackupJSON(obj, slug) {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj, null, 2));
-      const a = document.createElement('a');
-      a.href = dataStr;
-      a.download = `${slug}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
     }
 
     function showToast(msg) {
@@ -788,7 +924,6 @@
           `;
         }).join('');
 
-        // Populate calendar queue
         const scheduledList = articles.filter(a => a.status === 'Scheduled' || new Date(a.date) > new Date());
         if (scheduledList.length > 0) {
           scheduleTimeline.innerHTML = scheduledList.map(s => `
@@ -804,14 +939,14 @@
             </div>
           `).join('');
         } else {
-          scheduleTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No scheduled articles currently queued. Set a future date &amp; time in the editor to queue posts.</div>';
+          scheduleTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No scheduled articles currently queued.</div>';
         }
 
       } catch {
         tbody.innerHTML = `
           <tr>
             <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
-              No articles published yet. Click <strong>"Write New Article"</strong> to compose and schedule your first post.
+              No articles published yet. Click <strong>"Write New Article"</strong> to compose your first post.
             </td>
           </tr>
         `;
@@ -819,7 +954,6 @@
       }
     }
 
-    // Initialize on load
     checkAuth();
     if (localStorage.getItem(GH_TOKEN_KEY)) {
       document.getElementById('ghTokenInput').value = localStorage.getItem(GH_TOKEN_KEY);

@@ -1,0 +1,22 @@
+name: Rebuild Beyond Work Index
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/beyond-work/**'
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build article index
+        run: node scripts/build-index.js
+      - name: Commit updated index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/beyond-work/index.json
+          git diff --staged --quiet || git commit -m "chore: rebuild beyond-work index [skip ci]"
+          git push

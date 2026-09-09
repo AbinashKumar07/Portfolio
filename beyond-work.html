@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Beyond Work — Abinash Kumar | Essays on Psychology, Writing & Life</title>
+<meta name="description" id="pageDescription" content="Beyond the client work — original essays and articles by Abinash Kumar on human psychology, content strategy, personal growth, and the craft of writing.">
+<meta name="keywords" id="pageKeywords" content="Abinash Kumar, Beyond Work, Human Psychology, Writing Essays, Content Strategy Articles, Personal Growth">
+<meta property="og:type" content="website">
+<meta property="og:title" id="ogTitle" content="Beyond Work — Abinash Kumar">
+<meta property="og:description" id="ogDescription" content="Original essays and articles on psychology, writing, and life by Abinash Kumar.">
+<meta property="og:image" id="ogImage" content="../assets/profile.jpg">
+<link rel="canonical" id="canonicalLink" href="https://abinashkumar07.github.io/Portfolio/beyond-work.html">
+<link rel="icon" type="image/png" href="assets/profile.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/footer-social-icons.css">
+<style>
+  .bw-hero { padding-top: 8.5rem; padding-bottom: 3rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border-light); }
+  .bw-hero-title { font-size: clamp(2.5rem, 5vw, 3.75rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
+  .bw-hero-sub { font-size: 1.125rem; color: var(--text-secondary); max-width: 640px; line-height: 1.65; }
+  .bw-filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 2rem; }
+  .bw-filter-btn { padding: 0.55rem 1.2rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-card); color: var(--text-secondary); transition: all var(--transition-fast); cursor: pointer; }
+  .bw-filter-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
+  .bw-filter-btn.active { background: var(--accent-purple); border-color: var(--accent-purple); color: #fff; }
+  .bw-grid-section { padding: 4rem 0 6rem; }
+  .bw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
+  .bw-card { background: var(--bg-card); border: 1.5px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; transition: all var(--transition-normal); display: flex; flex-direction: column; text-decoration: none; color: inherit; cursor: pointer; }
+  .bw-card:hover { border-color: var(--accent-purple); box-shadow: 0 10px 28px rgba(121, 82, 232, 0.15); transform: translateY(-4px); }
+  .bw-card-img-wrap { height: 200px; overflow: hidden; background: var(--bg-secondary); }
+  .bw-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-normal); }
+  .bw-card:hover .bw-card-img { transform: scale(1.05); }
+  .bw-card-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+  .bw-card-category { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-purple); margin-bottom: 0.6rem; }
+  .bw-card-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.6rem; line-height: 1.3; }
+  .bw-card-excerpt { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem; flex-grow: 1; }
+  .bw-card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); padding-top: 1rem; border-top: 1px solid var(--border-subtle); }
+  .bw-empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
+  .bw-empty-state h3 { font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+  @media (max-width: 900px) { .bw-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .bw-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="nav-container">
+    <a href="index.html" class="brand-logo"><img src="assets/profile.png" alt="Abinash Kumar" class="brand-avatar"><span>ABINASH KUMAR</span></a>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html#philosophy" class="nav-link">Philosophy</a>
+      <a href="index.html#practice" class="nav-link">Practice</a>
+      <a href="index.html#work" class="nav-link">Portfolio</a>
+      <a href="index.html#certificates" class="nav-link">Honors</a>
+      <a href="beyond-work.html" class="nav-link active">Beyond Work</a>
+      <a href="index.html#book" class="nav-link">My Book</a>
+      <a href="resume.html" class="nav-link">Resume</a>
+      <a href="index.html#toolkit" class="nav-link">Toolkit</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="theme-switch-wrap" title="Toggle Light / Dark Mode">
+        <button class="theme-switch-btn" id="themeSwitchBtn" aria-label="Toggle Theme">
+          <span class="switch-icon-sun">☀️</span><span class="switch-icon-moon">🌙</span>
+          <div class="theme-switch-thumb" id="themeSwitchThumb"></div>
+        </button>
+      </div>
+      <button class="mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="bw-hero">
+    <div class="container">
+      <span class="section-tag">Essays &amp; Articles</span>
+      <h1 class="bw-hero-title">Beyond Work</h1>
+      <p class="bw-hero-sub">Outside client work and case studies — this is where I write about human psychology, the craft of writing, content strategy, and the lessons behind the work. Published straight from my content admin panel.</p>
+      <div class="bw-filter-row" id="bwFilterRow">
+        <button class="bw-filter-btn active" data-filter="all">All</button>
+        <button class="bw-filter-btn" data-filter="Psychology">Psychology</button>
+        <button class="bw-filter-btn" data-filter="Writing">Writing</button>
+        <button class="bw-filter-btn" data-filter="Content Strategy">Content Strategy</button>
+        <button class="bw-filter-btn" data-filter="Personal Growth">Personal Growth</button>
+        <button class="bw-filter-btn" data-filter="Books">Books</button>
+        <button class="bw-filter-btn" data-filter="Life Lessons">Life Lessons</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bw-grid-section">
+    <div class="container">
+      <div class="bw-grid" id="bwGrid"></div>
+      <div class="bw-empty-state" id="bwEmptyState" style="display:none;">
+        <h3>New essays are on the way.</h3>
+        <p>Publish your first article from the admin panel at <code>/admin</code> — it will appear here automatically.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="siteFooterInclude"></footer>
+
+<script src="js/main.js"></script>
+<script src="js/beyond-work.js"></script>
+<script src="js/footer-loader.js"></script>
+</body>
+</html>

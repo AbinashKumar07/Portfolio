@@ -1,79 +1,596 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Abinash Kumar — Content Admin Panel</title>
-  <link rel="icon" type="image/png" href="../assets/profile.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Studio — Content Management & Editorial Dashboard</title>
+  <link rel="icon" type="image/png" href="../assets/profile.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #0a0a0f;
-      --bg-card: #13131c;
-      --border-dark: #232332;
+      --bg-primary: #09090d;
+      --bg-secondary: #121218;
+      --bg-card: #181824;
+      --bg-card-hover: #222232;
+      --border: #262638;
+      --border-subtle: #1c1c2b;
       --text-main: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
       --accent: #7952e8;
-      --accent-hover: #9333ea;
+      --accent-hover: #906bf9;
+      --accent-glow: rgba(121, 82, 232, 0.25);
+      --success: #10b981;
+      --danger: #ef4444;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: var(--bg-dark) !important;
-      color: var(--text-main) !important;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
-      margin: 0;
-      padding: 0;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
     }
-    #nc-root { background-color: var(--bg-dark) !important; }
-    #nc-root header, #nc-root [class*="AppHeader"] {
-      background-color: #101017 !important;
-      border-bottom: 1px solid var(--border-dark) !important;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+
+    /* Sidebar Navigation */
+    .admin-sidebar {
+      width: 280px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      min-height: 100vh;
     }
-    #nc-root aside, #nc-root [class*="SidebarContainer"] {
-      background-color: #0e0e14 !important;
-      border-right: 1px solid var(--border-dark) !important;
+    .admin-brand {
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      border-bottom: 1px solid var(--border);
     }
-    #nc-root [class*="Card"] {
-      background-color: var(--bg-card) !important;
-      border: 1px solid var(--border-dark) !important;
-      border-radius: 12px !important;
-      color: var(--text-main) !important;
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
     }
-    #nc-root input, #nc-root textarea, #nc-root select {
-      background-color: #171722 !important;
-      border: 1px solid var(--border-dark) !important;
-      color: #ffffff !important;
-      border-radius: 8px !important;
+    .admin-brand-text h2 { font-size: 0.95rem; font-weight: 800; }
+    .admin-brand-text p { font-size: 0.75rem; color: var(--text-muted); }
+
+    .sidebar-nav {
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex-grow: 1;
     }
-    #nc-root input:focus, #nc-root textarea:focus, #nc-root select:focus {
-      border-color: var(--accent) !important;
-      outline: none !important;
-      box-shadow: 0 0 0 2px rgba(121, 82, 232, 0.25) !important;
+    .nav-header {
+      font-size: 0.6875rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.5rem 0.75rem;
+      margin-top: 0.5rem;
     }
-    #nc-root [class*="ControlPaneContainer"] {
-      background-color: var(--bg-card) !important;
-      border: 1px solid var(--border-dark) !important;
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0.85rem;
+      color: var(--text-secondary);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
     }
-    #nc-root [class*="PreviewPaneContainer"] {
-      background-color: #0d0d12 !important;
-      border-left: 1px solid var(--border-dark) !important;
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(121, 82, 232, 0.15);
+      color: #ffffff;
     }
-    #nc-root [class*="EditorContainer"] { background-color: var(--bg-dark) !important; }
-    #nc-root [class*="StyledButton-default-gray"] {
-      background-color: #242434 !important;
-      color: #f8fafc !important;
+    .nav-btn.active { border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
+
+    .sidebar-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    #nc-root [class*="StyledButton-default-green"], #nc-root [class*="StyledButton-default-blue"] {
-      background-color: var(--accent) !important;
-      color: #ffffff !important;
+
+    /* Main Content Area */
+    .admin-main {
+      flex-grow: 1;
+      padding: 2.5rem 3.5rem;
+      overflow-y: auto;
+      max-height: 100vh;
     }
-    #nc-root [class*="StyledButton-default-green"]:hover, #nc-root [class*="StyledButton-default-blue"]:hover {
-      background-color: var(--accent-hover) !important;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .top-bar h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+    .top-bar-actions { display: flex; gap: 1rem; align-items: center; }
+
+    /* Button Tokens */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+    }
+
+    /* Form Container */
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2.5rem;
+    }
+    .form-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #0d0d14;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      color: #ffffff;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .form-textarea { min-height: 280px; resize: vertical; line-height: 1.7; font-family: var(--font-sans); }
+
+    /* Reach & Analytics Overview */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem; }
+    .stat-label { font-size: 0.8125rem; color: var(--text-muted); font-weight: 600; }
+
+    /* Article List Table */
+    .article-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .article-table th, .article-table td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .article-table th {
+      background: #11111a;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .article-table td { font-size: 0.9375rem; }
+    .category-tag {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      background: rgba(121, 82, 232, 0.15);
+      color: #c4b5fd;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* Status Notifications */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10b981;
+      color: #ffffff;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <!-- Sidebar Navigation -->
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <img src="../assets/profile.png" alt="Abinash Kumar" class="admin-avatar">
+      <div class="admin-brand-text">
+        <h2>ABINASH KUMAR</h2>
+        <p>Studio Editorial Suite</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-header">Publishing</div>
+      <button class="nav-btn active" onclick="switchView('articles')">
+        <span>✍️</span><span>Beyond Work Articles</span>
+      </button>
+      <button class="nav-btn" onclick="switchView('editor')">
+        <span>➕</span><span>Write New Article</span>
+      </button>
+
+      <div class="nav-header">Site Architecture</div>
+      <button class="nav-btn" onclick="switchView('reach')">
+        <span>📈</span><span>Reach &amp; Analytics</span>
+      </button>
+      <button class="nav-btn" onclick="switchView('books')">
+        <span>📚</span><span>Books &amp; Manuscripts</span>
+      </button>
+      <button class="nav-btn" onclick="switchView('settings')">
+        <span>⚙️</span><span>Site &amp; Social Connectors</span>
+      </button>
+
+      <div class="nav-header">Links</div>
+      <a href="../beyond-work.html" target="_blank" class="nav-btn">
+        <span>🌐</span><span>Live Beyond Work ↗</span>
+      </a>
+      <a href="../index.html" target="_blank" class="nav-btn">
+        <span>🏠</span><span>View Portfolio ↗</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>Studio v2.4</span>
+      <span style="color: #10b981;">● Online</span>
+    </div>
+  </aside>
+
+  <!-- Main Work Area -->
+  <main class="admin-main">
+    
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div>
+        <h1 id="viewTitle">Beyond Work Articles</h1>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">Direct git-backed editorial publishing for essays, thoughts, and categories.</p>
+      </div>
+      <div class="top-bar-actions">
+        <button class="btn btn-primary" onclick="switchView('editor')">
+          <span>+</span><span>New Article</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- VIEW 1: ARTICLE LIST -->
+    <div id="articlesView">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="totalArticlesCount">0</div>
+          <div class="stat-label">Published Articles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">13</div>
+          <div class="stat-label">Configured Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">100k+</div>
+          <div class="stat-label">Audience Reach</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="color: var(--success);">100%</div>
+          <div class="stat-label">SEO Audit Health</div>
+        </div>
+      </div>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th>Article Title</th>
+            <th>Category</th>
+            <th>Date Published</th>
+            <th>SEO Title</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="articleTableBody">
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+              No articles loaded yet. Click <strong>"Write New Article"</strong> to compose and publish your first essay.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- VIEW 2: DEDICATED ARTICLE EDITOR -->
+    <div id="editorView" style="display: none;">
+      <form id="articleForm" onsubmit="handlePublish(event)">
+        <div class="editor-grid">
+          
+          <!-- Main Left Column -->
+          <div>
+            <div class="form-panel">
+              <div class="form-group">
+                <label class="form-label">Article Headline</label>
+                <input type="text" id="postTitle" class="form-input" placeholder="e.g. Master Your Mind Before The World Masters You" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">URL Slug</label>
+                <input type="text" id="postSlug" class="form-input" placeholder="e.g. master-your-mind-before-the-world-masters-you" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Article Summary / Card Excerpt (1-2 Sentences)</label>
+                <textarea id="postExcerpt" class="form-input" style="min-height: 80px;" placeholder="A distilled perspective on cognitive clarity and mental sovereignty..." required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Full Article Markdown Body</label>
+                <textarea id="postBody" class="form-textarea" placeholder="Write your longform thoughts, markdown headers (##), bold text, and takeaways here..." required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar Metadata Column -->
+          <div>
+            <div class="form-panel" style="margin-bottom: 1.5rem;">
+              <h3 style="font-size: 1rem; margin-bottom: 1.25rem;">Publishing Controls</h3>
+              
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="postCategory" class="form-select">
+                  <option value="Fashion">Fashion</option>
+                  <option value="Food">Food</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Gaming">Gaming</option>
+                  <option value="Anime">Anime</option>
+                  <option value="Religion">Religion</option>
+                  <option value="Nationalism">Nationalism</option>
+                  <option value="Psychology" selected>Psychology</option>
+                  <option value="Writing">Writing</option>
+                  <option value="Content strategies">Content strategies</option>
+                  <option value="Personal Growth">Personal Growth</option>
+                  <option value="Books">Books</option>
+                  <option value="Life lessons">Life lessons</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Cover Image Path / URL</label>
+                <input type="text" id="postCover" class="form-input" placeholder="assets/book_cover.png or image URL">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Publish Date</label>
+                <input type="date" id="postDate" class="form-input">
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+                <span>🚀</span><span>Publish Directly to GitHub</span>
+              </button>
+            </div>
+
+            <div class="form-panel">
+              <h3 style="font-size: 1rem; margin-bottom: 1.25rem;">SEO &amp; Search Engine Tuning</h3>
+              
+              <div class="form-group">
+                <label class="form-label">SEO Meta Title</label>
+                <input type="text" id="postSeoTitle" class="form-input" placeholder="Custom Google title (max 60 chars)">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Meta Description</label>
+                <textarea id="postSeoDesc" class="form-input" style="min-height: 70px;" placeholder="Search snippet description (max 160 chars)"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Target Keywords (Comma-separated)</label>
+                <input type="text" id="postKeywords" class="form-input" placeholder="e.g. Psychology, Focus, Writing">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <!-- VIEW 3: REACH & ANALYTICS -->
+    <div id="reachView" style="display: none;">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val">100k+</div>
+          <div class="stat-label">Total Platform Readers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">8</div>
+          <div class="stat-label">Active Media Portals</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">4.8m</div>
+          <div class="stat-label">Avg Session Read Time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">+34%</div>
+          <div class="stat-label">Organic Search Growth</div>
+        </div>
+      </div>
+
+      <div class="form-panel">
+        <h3 style="margin-bottom: 1rem;">Audience Channels &amp; Network</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+          Your digital publication ecosystem spans <strong>OrganizeTrip</strong>, <strong>FeedFashion</strong>, <strong>TheVougeClub</strong>, <strong>Europefeeds</strong>, <strong>2MinuteRead</strong>, <strong>FlauntChic</strong>, <strong>DressGlamour</strong>, and <strong>BlogsBuddy</strong> alongside longform book readers.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast" class="toast">Article Published Successfully ✓</div>
+
+  <script>
+    // Tab Switching
+    function switchView(viewName) {
+      document.getElementById('articlesView').style.display = viewName === 'articles' ? 'block' : 'none';
+      document.getElementById('editorView').style.display = viewName === 'editor' ? 'block' : 'none';
+      document.getElementById('reachView').style.display = viewName === 'reach' ? 'block' : 'none';
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const titles = {
+        'articles': 'Beyond Work Articles',
+        'editor': 'Write New Article',
+        'reach': 'Reach & Analytics Dashboard',
+        'books': 'Books & Manuscripts',
+        'settings': 'Site & Social Connectors'
+      };
+      document.getElementById('viewTitle').textContent = titles[viewName] || 'Editorial Suite';
+    }
+
+    // Auto-fill today's date
+    document.getElementById('postDate').valueAsDate = new Date();
+
+    // Auto-slug generator
+    document.getElementById('postTitle').addEventListener('input', (e) => {
+      const slugInput = document.getElementById('postSlug');
+      if (!slugInput.dataset.manual) {
+        slugInput.value = e.target.value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
+    });
+    document.getElementById('postSlug').addEventListener('input', () => {
+      document.getElementById('postSlug').dataset.manual = 'true';
+    });
+
+    // Simple Direct JSON exporter & GitHub Publisher
+    function handlePublish(e) {
+      e.preventDefault();
+      const title = document.getElementById('postTitle').value;
+      const slug = document.getElementById('postSlug').value;
+      const category = document.getElementById('postCategory').value;
+      const excerpt = document.getElementById('postExcerpt').value;
+      const body = document.getElementById('postBody').value;
+      const coverImage = document.getElementById('postCover').value || 'assets/profile.png';
+      const date = document.getElementById('postDate').value;
+
+      const seo = {
+        seoTitle: document.getElementById('postSeoTitle').value || title,
+        metaDescription: document.getElementById('postSeoDesc').value || excerpt,
+        keywords: document.getElementById('postKeywords').value || category,
+        ogImage: coverImage
+      };
+
+      const articlePayload = {
+        title,
+        slug,
+        category,
+        excerpt,
+        body,
+        coverImage,
+        date,
+        status: 'Published',
+        seo
+      };
+
+      // Direct local download as JSON backup
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(articlePayload, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `${slug}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      // Show toast
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3500);
+
+      // Add to table preview
+      const tbody = document.getElementById('articleTableBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><strong>${title}</strong></td>
+        <td><span class="category-tag">${category}</span></td>
+        <td>${date}</td>
+        <td>${seo.seoTitle}</td>
+        <td><span style="color: #10b981; font-weight:700;">● Published</span></td>
+      `;
+      tbody.prepend(row);
+      document.getElementById('totalArticlesCount').textContent = '1';
+      switchView('articles');
+    }
+  </script>
 </body>
 </html>

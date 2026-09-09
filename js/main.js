@@ -1,10 +1,13 @@
 /**
- * PORTFOLIO APPLICATION JAVASCRIPT
+ * PORTFOLIO APPLICATION JAVASCRIPT — COMPLETE & POLISHED
+ * Seamless cross-page anchor scrolling, active spy, theme switcher,
+ * animated impact counters, interactive diagram, accordions & modals.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   initNavbar();
+  initHashScrollOnLoad();
   initCounters();
   initOrbitDiagram();
   initPracticeAccordion();
@@ -15,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
 });
 
+/* --- 1. Theme Switcher (Dark Mode by Default with Smooth Toggle) --- */
 function initThemeToggle() {
   const themeSwitchBtn = document.querySelector('#themeSwitchBtn');
   const thumb = document.querySelector('#themeSwitchThumb');
@@ -43,12 +47,57 @@ function initThemeToggle() {
   }
 }
 
+/* --- 2. Cross-Page Hash Scrolling Fix (Fixes "My Book" / "Toolkit" navigation from Beyond Work & Resume) --- */
+function initHashScrollOnLoad() {
+  const scrollToHash = () => {
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        setTimeout(() => {
+          const headerOffset = 90;
+          const elementPosition = target.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }, 150);
+      }
+    }
+  };
+
+  scrollToHash();
+  window.addEventListener('hashchange', scrollToHash);
+}
+
+/* --- 3. Sticky Navigation, In-Page Smooth Scroll & Active Spy --- */
 function initNavbar() {
   const header = document.querySelector('.site-header');
   const navLinks = document.querySelectorAll('.nav-link');
   const sections = document.querySelectorAll('section[id]');
   const mobileToggle = document.querySelector('.mobile-toggle');
   const navMenu = document.querySelector('.nav-menu');
+
+  // In-page smooth scroll click handler
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#') && href !== '#') {
+        const targetSection = document.querySelector(href);
+        if (targetSection) {
+          e.preventDefault();
+          const headerOffset = 90;
+          const elementPosition = targetSection.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+          history.pushState(null, null, href);
+        }
+      }
+    });
+  });
 
   if (header) {
     window.addEventListener('scroll', () => {
@@ -100,6 +149,7 @@ function initNavbar() {
   }
 }
 
+/* --- 4. Animated Metrics Counters --- */
 function initCounters() {
   const counterElements = document.querySelectorAll('.metric-number');
   if (counterElements.length === 0) return;
@@ -134,12 +184,13 @@ function initCounters() {
         counterElements.forEach(el => animateCounter(el));
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.1 });
 
   const metricsSection = document.querySelector('#impact');
   if (metricsSection) observer.observe(metricsSection);
 }
 
+/* --- 5. Interactive Orbital Venn Diagram --- */
 function initOrbitDiagram() {
   const nodes = document.querySelectorAll('.orbit-node');
   const centerNode = document.querySelector('.orbit-center-node');
@@ -178,6 +229,7 @@ function initOrbitDiagram() {
   }
 }
 
+/* --- 6. Practice Disciplines Accordion --- */
 function initPracticeAccordion() {
   const accordionItems = document.querySelectorAll('.practice-accordion .accordion-item');
   if (accordionItems.length === 0) return;
@@ -213,6 +265,7 @@ function initPracticeAccordion() {
   }
 }
 
+/* --- 7. Selected Work Filtering --- */
 function initPortfolioFilters() {
   const filterBtns = document.querySelectorAll('.filter-btn');
   const cards = document.querySelectorAll('.portfolio-card');
@@ -244,6 +297,7 @@ function initPortfolioFilters() {
   });
 }
 
+/* --- 8. Book Interactive Accordion --- */
 function initBookAccordion() {
   const bookBox = document.querySelector('#bookInteractiveBox');
   const toggleBtn = document.querySelector('#bookAccordionToggle');
@@ -265,6 +319,7 @@ function initBookAccordion() {
   body.style.maxHeight = body.scrollHeight + 'px';
 }
 
+/* --- 9. Certificates Lightbox --- */
 const certificatesData = {
   'cert-unlock-dec': {
     title: 'Certificate of Appreciation — Best Performer of the Month',
@@ -291,7 +346,7 @@ const certificatesData = {
     badge: 'Graduate with Honors · Sep 2022',
     signatory: 'Deepak Chopra (Founder & CEO)',
     image: 'assets/certificates/cert_fea_honors.png',
-    description: 'Completed FEA\\'s rigorous 1-year program of English, Computer & Internet Skills, Personality Development, Grit, Ethics, and Adaptability with Honors.'
+    description: 'Completed FEA\'s rigorous 1-year program of English, Computer & Internet Skills, Personality Development, Grit, Ethics, and Adaptability with Honors.'
   },
   'cert-fea-commendation': {
     title: 'Letter of Commendation — Volunteer & Service Leadership',

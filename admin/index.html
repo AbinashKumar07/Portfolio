@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Studio Studio — Content Management & Editorial Dashboard</title>
+  <title>Studio Editorial Suite — Abinash Kumar</title>
   <link rel="icon" type="image/png" href="../assets/profile.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,9 +11,9 @@
   <style>
     :root {
       --bg-primary: #09090d;
-      --bg-secondary: #121218;
-      --bg-card: #181824;
-      --bg-card-hover: #222232;
+      --bg-secondary: #111117;
+      --bg-card: #171722;
+      --bg-card-hover: #1f1f2e;
       --border: #262638;
       --border-subtle: #1c1c2b;
       --text-main: #f8fafc;
@@ -24,6 +24,7 @@
       --accent-glow: rgba(121, 82, 232, 0.25);
       --success: #10b981;
       --danger: #ef4444;
+      --scheduled: #f59e0b;
       --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -34,6 +35,35 @@
       font-family: var(--font-sans);
       min-height: 100vh;
       display: flex;
+    }
+
+    /* Auth Gate Modal */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 9, 13, 0.95);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+    .auth-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      margin-bottom: 1.25rem;
     }
 
     /* Sidebar Navigation */
@@ -123,7 +153,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border-subtle);
     }
@@ -154,38 +184,44 @@
       background: var(--accent-hover);
       transform: translateY(-2px);
     }
+    .btn-schedule {
+      background: #d97706;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+    }
+    .btn-schedule:hover {
+      background: #b45309;
+      transform: translateY(-2px);
+    }
     .btn-secondary {
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-main);
     }
-    .btn-secondary:hover {
-      background: var(--bg-card-hover);
-    }
+    .btn-secondary:hover { background: var(--bg-card-hover); }
 
-    /* Form Container */
+    /* Form & Editor Grid */
     .editor-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 2.5rem;
+      gap: 2rem;
     }
     .form-panel {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 2rem;
-    }
-    .form-group {
+      padding: 1.75rem;
       margin-bottom: 1.5rem;
     }
+    .form-group { margin-bottom: 1.25rem; }
     .form-label {
       display: block;
-      font-size: 0.8125rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
       color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
     .form-input, .form-select, .form-textarea {
       width: 100%;
@@ -203,25 +239,39 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
-    .form-textarea { min-height: 280px; resize: vertical; line-height: 1.7; font-family: var(--font-sans); }
+    .form-textarea { min-height: 280px; resize: vertical; line-height: 1.7; }
 
-    /* Reach & Analytics Overview */
-    .stats-row {
+    /* Schedule Time Split Controls */
+    .schedule-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 0.75rem;
     }
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.5rem;
-    }
-    .stat-val { font-size: 2rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem; }
-    .stat-label { font-size: 0.8125rem; color: var(--text-muted); font-weight: 600; }
 
-    /* Article List Table */
+    /* Device Image Picker Zone */
+    .image-drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: #0d0d14;
+      transition: all 0.2s ease;
+    }
+    .image-drop-zone:hover {
+      border-color: var(--accent);
+      background: rgba(121, 82, 232, 0.05);
+    }
+    .image-preview-img {
+      max-width: 100%;
+      max-height: 140px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    /* Live Article Table */
     .article-table {
       width: 100%;
       border-collapse: collapse;
@@ -243,7 +293,6 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .article-table td { font-size: 0.9375rem; }
     .category-tag {
       display: inline-block;
       padding: 0.25rem 0.65rem;
@@ -253,8 +302,19 @@
       font-size: 0.75rem;
       font-weight: 700;
     }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+    }
+    .status-published { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .status-scheduled { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
 
-    /* Status Notifications */
+    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -266,65 +326,84 @@
       font-weight: 700;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       display: none;
-      z-index: 1000;
+      z-index: 10000;
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar Navigation -->
+  <!-- ==================== AUTH GATE ==================== -->
+  <div class="auth-overlay" id="authOverlay">
+    <div class="auth-card">
+      <img src="../assets/profile.png" alt="Abinash Kumar">
+      <h2 style="font-size: 1.35rem; margin-bottom: 0.35rem;">Studio Access Gate</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.75rem;">Enter credentials to unlock your content manager</p>
+      
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label">User ID / Username</label>
+          <input type="text" id="authUsername" class="form-input" placeholder="abinash" required autocomplete="username">
+        </div>
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label">Password</label>
+          <input type="password" id="authPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem; margin-top: 0.5rem;">
+          <span>🔒</span><span>Unlock Editorial Studio</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== SIDEBAR ==================== -->
   <aside class="admin-sidebar">
     <div class="admin-brand">
       <img src="../assets/profile.png" alt="Abinash Kumar" class="admin-avatar">
       <div class="admin-brand-text">
         <h2>ABINASH KUMAR</h2>
-        <p>Studio Editorial Suite</p>
+        <p>Portfolio Editorial Studio</p>
       </div>
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-header">Publishing</div>
-      <button class="nav-btn active" onclick="switchView('articles')">
-        <span>✍️</span><span>Beyond Work Articles</span>
+      <div class="nav-header">Publishing Engine</div>
+      <button class="nav-btn active" id="btn-articles" onclick="switchView('articles')">
+        <span>✍️</span><span>Published Articles</span>
       </button>
-      <button class="nav-btn" onclick="switchView('editor')">
+      <button class="nav-btn" id="btn-editor" onclick="switchView('editor')">
         <span>➕</span><span>Write New Article</span>
       </button>
-
-      <div class="nav-header">Site Architecture</div>
-      <button class="nav-btn" onclick="switchView('reach')">
-        <span>📈</span><span>Reach &amp; Analytics</span>
-      </button>
-      <button class="nav-btn" onclick="switchView('books')">
-        <span>📚</span><span>Books &amp; Manuscripts</span>
-      </button>
-      <button class="nav-btn" onclick="switchView('settings')">
-        <span>⚙️</span><span>Site &amp; Social Connectors</span>
+      <button class="nav-btn" id="btn-schedule" onclick="switchView('schedule')">
+        <span>📅</span><span>Editorial Calendar</span>
       </button>
 
-      <div class="nav-header">Links</div>
+      <div class="nav-header">Platform Settings</div>
+      <button class="nav-btn" id="btn-token" onclick="switchView('token')">
+        <span>🔑</span><span>GitHub Sync Key</span>
+      </button>
+
+      <div class="nav-header">Public Previews</div>
       <a href="../beyond-work.html" target="_blank" class="nav-btn">
         <span>🌐</span><span>Live Beyond Work ↗</span>
       </a>
       <a href="../index.html" target="_blank" class="nav-btn">
-        <span>🏠</span><span>View Portfolio ↗</span>
+        <span>🏠</span><span>Live Portfolio ↗</span>
       </a>
     </nav>
 
     <div class="sidebar-footer">
-      <span>Studio v2.4</span>
-      <span style="color: #10b981;">● Online</span>
+      <span id="syncStatusIndicator" style="color: #10b981;">● Studio Ready</span>
+      <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.75rem;">Log Out</button>
     </div>
   </aside>
 
-  <!-- Main Work Area -->
+  <!-- ==================== MAIN WORKSPACE ==================== -->
   <main class="admin-main">
     
-    <!-- TOP BAR -->
     <div class="top-bar">
       <div>
         <h1 id="viewTitle">Beyond Work Articles</h1>
-        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">Direct git-backed editorial publishing for essays, thoughts, and categories.</p>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">Live repository publishing and editorial scheduling.</p>
       </div>
       <div class="top-bar-actions">
         <button class="btn btn-primary" onclick="switchView('editor')">
@@ -335,79 +414,57 @@
 
     <!-- VIEW 1: ARTICLE LIST -->
     <div id="articlesView">
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-val" id="totalArticlesCount">0</div>
-          <div class="stat-label">Published Articles</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">13</div>
-          <div class="stat-label">Configured Categories</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">100k+</div>
-          <div class="stat-label">Audience Reach</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val" style="color: var(--success);">100%</div>
-          <div class="stat-label">SEO Audit Health</div>
-        </div>
-      </div>
-
       <table class="article-table">
         <thead>
           <tr>
             <th>Article Title</th>
             <th>Category</th>
-            <th>Date Published</th>
+            <th>Publish / Scheduled Time</th>
             <th>SEO Title</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody id="articleTableBody">
-          <tr>
-            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem;">
-              No articles loaded yet. Click <strong>"Write New Article"</strong> to compose and publish your first essay.
-            </td>
-          </tr>
+          <!-- Injected via loadLiveArticles() -->
         </tbody>
       </table>
     </div>
 
     <!-- VIEW 2: DEDICATED ARTICLE EDITOR -->
     <div id="editorView" style="display: none;">
-      <form id="articleForm" onsubmit="handlePublish(event)">
+      <form id="articleForm" onsubmit="publishArticleDirectly(event)">
         <div class="editor-grid">
           
-          <!-- Main Left Column -->
+          <!-- Left Column -->
           <div>
             <div class="form-panel">
               <div class="form-group">
-                <label class="form-label">Article Headline</label>
+                <label class="form-label">Article Headline *</label>
                 <input type="text" id="postTitle" class="form-input" placeholder="e.g. Master Your Mind Before The World Masters You" required>
               </div>
 
               <div class="form-group">
-                <label class="form-label">URL Slug</label>
+                <label class="form-label">URL Slug *</label>
                 <input type="text" id="postSlug" class="form-input" placeholder="e.g. master-your-mind-before-the-world-masters-you" required>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Article Summary / Card Excerpt (1-2 Sentences)</label>
-                <textarea id="postExcerpt" class="form-input" style="min-height: 80px;" placeholder="A distilled perspective on cognitive clarity and mental sovereignty..." required></textarea>
+                <label class="form-label">Article Summary / Excerpt (1-2 Sentences) *</label>
+                <textarea id="postExcerpt" class="form-input" style="min-height: 85px;" placeholder="A distilled perspective on cognitive clarity and mental sovereignty..." required></textarea>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Full Article Markdown Body</label>
-                <textarea id="postBody" class="form-textarea" placeholder="Write your longform thoughts, markdown headers (##), bold text, and takeaways here..." required></textarea>
+                <label class="form-label">Full Markdown Body *</label>
+                <textarea id="postBody" class="form-textarea" placeholder="Write your full essay here with markdown headers (##), paragraphs, and bullet points..." required></textarea>
               </div>
             </div>
           </div>
 
-          <!-- Sidebar Metadata Column -->
+          <!-- Right Column -->
           <div>
-            <div class="form-panel" style="margin-bottom: 1.5rem;">
-              <h3 style="font-size: 1rem; margin-bottom: 1.25rem;">Publishing Controls</h3>
+            <div class="form-panel">
+              <h3 style="font-size: 0.95rem; margin-bottom: 1.25rem;">Publishing &amp; Scheduling Controls</h3>
               
               <div class="form-group">
                 <label class="form-label">Category</label>
@@ -428,36 +485,52 @@
                 </select>
               </div>
 
+              <!-- Device Image Picker -->
               <div class="form-group">
-                <label class="form-label">Cover Image Path / URL</label>
-                <input type="text" id="postCover" class="form-input" placeholder="assets/book_cover.png or image URL">
+                <label class="form-label">Cover Image</label>
+                <div class="image-drop-zone" onclick="document.getElementById('deviceImageInput').click()">
+                  <span style="font-size: 1.5rem;">📷</span>
+                  <div style="font-size: 0.8125rem; font-weight: 700; color: var(--accent); margin-top: 0.35rem;">Choose image from device</div>
+                  <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 0.2rem;">PNG, JPG, WEBP from your computer</div>
+                  <input type="file" id="deviceImageInput" accept="image/*" style="display: none;" onchange="handleImagePick(event)">
+                  <img id="imagePreview" class="image-preview-img" alt="Preview">
+                </div>
               </div>
 
+              <!-- Inbuilt Calendar & Time Picker -->
               <div class="form-group">
-                <label class="form-label">Publish Date</label>
-                <input type="date" id="postDate" class="form-input">
+                <label class="form-label">Publication / Schedule Date &amp; Time</label>
+                <div class="schedule-grid">
+                  <input type="date" id="postDate" class="form-input" required>
+                  <input type="time" id="postTime" class="form-input" required>
+                </div>
+                <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 0.35rem;">
+                  Setting a future date &amp; time automatically tags the article as <strong>Scheduled</strong>.
+                </div>
               </div>
 
-              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
-                <span>🚀</span><span>Publish Directly to GitHub</span>
-              </button>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+                <button type="submit" id="publishBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.95rem;">
+                  <span>🚀</span><span>Publish Live to Website</span>
+                </button>
+              </div>
             </div>
 
             <div class="form-panel">
-              <h3 style="font-size: 1rem; margin-bottom: 1.25rem;">SEO &amp; Search Engine Tuning</h3>
+              <h3 style="font-size: 0.95rem; margin-bottom: 1.25rem;">Google SEO &amp; Keywords</h3>
               
               <div class="form-group">
                 <label class="form-label">SEO Meta Title</label>
-                <input type="text" id="postSeoTitle" class="form-input" placeholder="Custom Google title (max 60 chars)">
+                <input type="text" id="postSeoTitle" class="form-input" placeholder="Google snippet title (max 60 chars)">
               </div>
 
               <div class="form-group">
                 <label class="form-label">Meta Description</label>
-                <textarea id="postSeoDesc" class="form-input" style="min-height: 70px;" placeholder="Search snippet description (max 160 chars)"></textarea>
+                <textarea id="postSeoDesc" class="form-input" style="min-height: 75px;" placeholder="Search description (max 160 chars)"></textarea>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Target Keywords (Comma-separated)</label>
+                <label class="form-label">Keywords</label>
                 <input type="text" id="postKeywords" class="form-input" placeholder="e.g. Psychology, Focus, Writing">
               </div>
             </div>
@@ -468,61 +541,104 @@
       </form>
     </div>
 
-    <!-- VIEW 3: REACH & ANALYTICS -->
-    <div id="reachView" style="display: none;">
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-val">100k+</div>
-          <div class="stat-label">Total Platform Readers</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">8</div>
-          <div class="stat-label">Active Media Portals</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">4.8m</div>
-          <div class="stat-label">Avg Session Read Time</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">+34%</div>
-          <div class="stat-label">Organic Search Growth</div>
+    <!-- VIEW 3: EDITORIAL CALENDAR OVERVIEW -->
+    <div id="scheduleView" style="display: none;">
+      <div class="form-panel">
+        <h3 style="margin-bottom: 0.75rem;">📅 Scheduled Queue &amp; Timeline</h3>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7; margin-bottom: 1.5rem;">
+          Articles with future calendar timestamps will be held in your scheduled pipeline and dynamically go live as their release time arrives.
+        </p>
+
+        <div id="scheduleTimelineList">
+          <!-- Injected via loadLiveArticles() -->
         </div>
       </div>
+    </div>
 
-      <div class="form-panel">
-        <h3 style="margin-bottom: 1rem;">Audience Channels &amp; Network</h3>
-        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
-          Your digital publication ecosystem spans <strong>OrganizeTrip</strong>, <strong>FeedFashion</strong>, <strong>TheVougeClub</strong>, <strong>Europefeeds</strong>, <strong>2MinuteRead</strong>, <strong>FlauntChic</strong>, <strong>DressGlamour</strong>, and <strong>BlogsBuddy</strong> alongside longform book readers.
+    <!-- VIEW 4: GITHUB SYNC TOKEN SETUP -->
+    <div id="tokenView" style="display: none;">
+      <div class="form-panel" style="max-width: 680px;">
+        <h3 style="margin-bottom: 0.75rem;">GitHub 1-Click Sync Key</h3>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7; margin-bottom: 1.5rem;">
+          Paste your GitHub Personal Access Token with <strong>Contents: Read &amp; Write</strong> access. This is stored only in your local browser storage to commit articles straight to your repository without any third-party app.
         </p>
+
+        <div class="form-group">
+          <label class="form-label">GitHub Token</label>
+          <input type="password" id="ghTokenInput" class="form-input" placeholder="github_pat_..." autocomplete="off">
+        </div>
+
+        <button onclick="saveGitHubToken()" class="btn btn-primary">
+          <span>💾</span><span>Save Token Securely</span>
+        </button>
       </div>
     </div>
 
   </main>
 
-  <div id="toast" class="toast">Article Published Successfully ✓</div>
+  <div id="toast" class="toast">Article Published Live to Portfolio ✓</div>
 
   <script>
-    // Tab Switching
+    // --- 1. USER AUTHENTICATION ---
+    const AUTH_KEY = 'studio_auth_token';
+    const GH_TOKEN_KEY = 'studio_gh_pat';
+    let base64ImageString = '';
+
+    function checkAuth() {
+      const isAuth = localStorage.getItem(AUTH_KEY);
+      const overlay = document.getElementById('authOverlay');
+      if (isAuth === 'authenticated') {
+        overlay.style.display = 'none';
+        loadLiveArticles();
+      } else {
+        overlay.style.display = 'flex';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('authUsername').value.trim();
+      const p = document.getElementById('authPassword').value;
+
+      if ((u === 'abinash' || u === 'admin') && (p === 'admin' || p === 'Abinash2026!' || p === 'Admin2026!')) {
+        localStorage.setItem(AUTH_KEY, 'authenticated');
+        document.getElementById('authOverlay').style.display = 'none';
+        loadLiveArticles();
+      } else {
+        alert('Invalid credentials. Please enter your configured username and password.');
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem(AUTH_KEY);
+      location.reload();
+    }
+
+    // --- 2. VIEW SWITCHER ---
     function switchView(viewName) {
       document.getElementById('articlesView').style.display = viewName === 'articles' ? 'block' : 'none';
       document.getElementById('editorView').style.display = viewName === 'editor' ? 'block' : 'none';
-      document.getElementById('reachView').style.display = viewName === 'reach' ? 'block' : 'none';
+      document.getElementById('scheduleView').style.display = viewName === 'schedule' ? 'block' : 'none';
+      document.getElementById('tokenView').style.display = viewName === 'token' ? 'block' : 'none';
 
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${viewName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
       const titles = {
-        'articles': 'Beyond Work Articles',
-        'editor': 'Write New Article',
-        'reach': 'Reach & Analytics Dashboard',
-        'books': 'Books & Manuscripts',
-        'settings': 'Site & Social Connectors'
+        'articles': 'Published Beyond Work Articles',
+        'editor': 'Write New Beyond Work Article',
+        'schedule': 'Editorial Calendar & Schedule',
+        'token': 'GitHub Repository Sync Key'
       };
-      document.getElementById('viewTitle').textContent = titles[viewName] || 'Editorial Suite';
+      document.getElementById('viewTitle').textContent = titles[viewName] || 'Editorial Studio';
     }
 
-    // Auto-fill today's date
-    document.getElementById('postDate').valueAsDate = new Date();
+    // Auto slug, today's date and current time
+    const now = new Date();
+    document.getElementById('postDate').value = now.toISOString().split('T')[0];
+    document.getElementById('postTime').value = now.toTimeString().slice(0, 5);
 
-    // Auto-slug generator
     document.getElementById('postTitle').addEventListener('input', (e) => {
       const slugInput = document.getElementById('postSlug');
       if (!slugInput.dataset.manual) {
@@ -533,63 +649,180 @@
       document.getElementById('postSlug').dataset.manual = 'true';
     });
 
-    // Simple Direct JSON exporter & GitHub Publisher
-    function handlePublish(e) {
+    // --- 3. DEVICE IMAGE PICKER ---
+    function handleImagePick(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        base64ImageString = evt.target.result;
+        const preview = document.getElementById('imagePreview');
+        preview.src = base64ImageString;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // --- 4. GITHUB DIRECT PUBLISHER WITH SCHEDULING ---
+    function saveGitHubToken() {
+      const token = document.getElementById('ghTokenInput').value.trim();
+      if (!token) return alert('Please paste a valid token.');
+      localStorage.setItem(GH_TOKEN_KEY, token);
+      alert('GitHub Token saved securely in your browser!');
+      switchView('editor');
+    }
+
+    async function publishArticleDirectly(e) {
       e.preventDefault();
+      const btn = document.getElementById('publishBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span><span>Publishing to GitHub...</span>';
+
       const title = document.getElementById('postTitle').value;
       const slug = document.getElementById('postSlug').value;
       const category = document.getElementById('postCategory').value;
       const excerpt = document.getElementById('postExcerpt').value;
       const body = document.getElementById('postBody').value;
-      const coverImage = document.getElementById('postCover').value || 'assets/profile.png';
       const date = document.getElementById('postDate').value;
+      const time = document.getElementById('postTime').value;
+      const fullDateTime = `${date}T${time}:00`;
+      
+      const isFuture = new Date(fullDateTime) > new Date();
+      const status = isFuture ? 'Scheduled' : 'Published';
 
-      const seo = {
-        seoTitle: document.getElementById('postSeoTitle').value || title,
-        metaDescription: document.getElementById('postSeoDesc').value || excerpt,
-        keywords: document.getElementById('postKeywords').value || category,
-        ogImage: coverImage
-      };
+      const seoTitle = document.getElementById('postSeoTitle').value || title;
+      const metaDescription = document.getElementById('postSeoDesc').value || excerpt;
+      const keywords = document.getElementById('postKeywords').value || category;
 
-      const articlePayload = {
+      const articleObj = {
         title,
         slug,
         category,
         excerpt,
         body,
-        coverImage,
-        date,
-        status: 'Published',
-        seo
+        coverImage: base64ImageString || 'assets/profile.png',
+        date: fullDateTime,
+        status,
+        seo: { seoTitle, metaDescription, keywords, ogImage: base64ImageString || 'assets/profile.png' }
       };
 
-      // Direct local download as JSON backup
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(articlePayload, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `${slug}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      const token = localStorage.getItem(GH_TOKEN_KEY);
+      
+      if (token) {
+        try {
+          const repo = 'AbinashKumar07/Portfolio';
+          const filePath = `content/beyond-work/${slug}.json`;
+          const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(articleObj, null, 2))));
 
-      // Show toast
-      const toast = document.getElementById('toast');
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 3500);
+          const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `feat(article): ${status.toLowerCase()} ${title}`,
+              content: contentBase64
+            })
+          });
 
-      // Add to table preview
+          if (!res.ok) throw new Error('GitHub commit failed. Check token permissions.');
+          showToast(status === 'Scheduled' ? 'Article scheduled in calendar!' : 'Article published live to GitHub!');
+          loadLiveArticles();
+          switchView('articles');
+        } catch (err) {
+          alert(`Publishing Error: ${err.message}. Exporting JSON backup.`);
+          exportBackupJSON(articleObj, slug);
+        }
+      } else {
+        exportBackupJSON(articleObj, slug);
+        alert('Article downloaded as JSON! Tip: Add your GitHub Sync Key in the sidebar to publish live with 1-click.');
+        showToast('Article JSON generated.');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>🚀</span><span>Publish Live to Website</span>';
+    }
+
+    function exportBackupJSON(obj, slug) {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `${slug}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 4000);
+    }
+
+    async function loadLiveArticles() {
       const tbody = document.getElementById('articleTableBody');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><strong>${title}</strong></td>
-        <td><span class="category-tag">${category}</span></td>
-        <td>${date}</td>
-        <td>${seo.seoTitle}</td>
-        <td><span style="color: #10b981; font-weight:700;">● Published</span></td>
-      `;
-      tbody.prepend(row);
-      document.getElementById('totalArticlesCount').textContent = '1';
-      switchView('articles');
+      const scheduleTimeline = document.getElementById('scheduleTimelineList');
+      try {
+        const res = await fetch('../content/beyond-work/index.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error();
+        const articles = await res.json();
+        if (articles.length === 0) throw new Error();
+
+        tbody.innerHTML = articles.map(a => {
+          const isScheduled = a.status === 'Scheduled' || new Date(a.date) > new Date();
+          const statusClass = isScheduled ? 'status-scheduled' : 'status-published';
+          const statusText = isScheduled ? '⏳ Scheduled' : '● Published';
+
+          return `
+            <tr>
+              <td><strong>${a.title}</strong></td>
+              <td><span class="category-tag">${a.category}</span></td>
+              <td>${new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
+              <td>${a.seo ? a.seo.seoTitle : a.title}</td>
+              <td><span class="status-pill ${statusClass}">${statusText}</span></td>
+              <td><a href="../beyond-work-article.html?slug=${a.slug}" target="_blank" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">View Live ↗</a></td>
+            </tr>
+          `;
+        }).join('');
+
+        // Populate calendar queue
+        const scheduledList = articles.filter(a => a.status === 'Scheduled' || new Date(a.date) > new Date());
+        if (scheduledList.length > 0) {
+          scheduleTimeline.innerHTML = scheduledList.map(s => `
+            <div style="background: #0d0d14; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">${s.title}</h4>
+                <div style="font-size: 0.8125rem; color: var(--text-muted);">Category: <span style="color: var(--accent);">${s.category}</span></div>
+              </div>
+              <div style="text-align: right;">
+                <div style="color: var(--scheduled); font-weight: 700; font-size: 0.875rem;">${new Date(s.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</div>
+                <span class="status-pill status-scheduled" style="margin-top: 0.25rem;">Scheduled Release</span>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          scheduleTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No scheduled articles currently queued. Set a future date &amp; time in the editor to queue posts.</div>';
+        }
+
+      } catch {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+              No articles published yet. Click <strong>"Write New Article"</strong> to compose and schedule your first post.
+            </td>
+          </tr>
+        `;
+        scheduleTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No scheduled articles currently queued.</div>';
+      }
+    }
+
+    // Initialize on load
+    checkAuth();
+    if (localStorage.getItem(GH_TOKEN_KEY)) {
+      document.getElementById('ghTokenInput').value = localStorage.getItem(GH_TOKEN_KEY);
     }
   </script>
 </body>

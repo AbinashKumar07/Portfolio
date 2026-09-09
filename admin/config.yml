@@ -2,14 +2,15 @@ backend:
   name: github
   repo: AbinashKumar07/Portfolio
   branch: main
-  base_url: https://peppy-bublanina-b8a53f.netlify.app
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
 
 publish_mode: editorial_workflow
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
-site_url: https://abinashkumar07.github.io/Portfolio/
-display_url: https://peppy-bublanina-b8a53f.netlify.app
+site_url: https://peppy-bublanina-b8a53f.netlify.app/
+display_url: https://peppy-bublanina-b8a53f.netlify.app/
 logo_url: /assets/profile.jpg
 
 collections:

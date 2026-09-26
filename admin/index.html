@@ -942,8 +942,9 @@
           let currentArticles = [];
           let indexSha = null;
           try {
-            const indexCheck = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
-              headers: { 'Authorization': `token ${token}` }
+            const indexCheck = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json?ref=main&t=${Date.now()}`, {
+              headers: { 'Authorization': `token ${token}` },
+              cache: 'no-store'
             });
             if (indexCheck.ok) {
               const indexData = await indexCheck.json();
@@ -1122,8 +1123,9 @@
         let currentArticles = [];
         let indexSha = null;
         try {
-          const indexCheck = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
-            headers: { 'Authorization': `token ${token}` }
+          const indexCheck = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json?ref=main&t=${Date.now()}`, {
+            headers: { 'Authorization': `token ${token}` },
+            cache: 'no-store'
           });
           if (indexCheck.ok) {
             const indexData = await indexCheck.json();

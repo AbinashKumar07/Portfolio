@@ -949,7 +949,15 @@
             if (indexCheck.ok) {
               const indexData = await indexCheck.json();
               indexSha = indexData.sha;
-              currentArticles = JSON.parse(decodeURIComponent(escape(atob(indexData.content))));
+              if (indexData.content) {
+                currentArticles = JSON.parse(decodeURIComponent(escape(atob(indexData.content))));
+              } else {
+                const rawRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
+                  headers: { 'Authorization': `token ${token}` },
+                  cache: 'no-store'
+                });
+                if (rawRes.ok) currentArticles = await rawRes.json();
+              }
             }
           } catch(err) {}
 
@@ -1004,13 +1012,12 @@
         
         if (token) {
           const repo = 'AbinashKumar07/Portfolio';
-          const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json?ref=main&t=${Date.now()}`, {
+          const ghRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
             headers: { 'Authorization': `token ${token}` },
             cache: 'no-store'
           });
           if (ghRes.ok) {
-            const ghData = await ghRes.json();
-            articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
+            articles = await ghRes.json();
           } else {
             console.warn('GitHub API fetch failed, falling back to local file.');
             throw new Error('GitHub API Error');
@@ -1130,7 +1137,15 @@
           if (indexCheck.ok) {
             const indexData = await indexCheck.json();
             indexSha = indexData.sha;
-            currentArticles = JSON.parse(decodeURIComponent(escape(atob(indexData.content))));
+            if (indexData.content) {
+              currentArticles = JSON.parse(decodeURIComponent(escape(atob(indexData.content))));
+            } else {
+              const rawRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
+                headers: { 'Authorization': `token ${token}` },
+                cache: 'no-store'
+              });
+              if (rawRes.ok) currentArticles = await rawRes.json();
+            }
           }
         } catch(e) {}
 

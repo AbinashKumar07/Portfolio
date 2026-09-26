@@ -1003,22 +1003,24 @@
         
         if (token) {
           const repo = 'AbinashKumar07/Portfolio';
-          const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
-            headers: { 'Authorization': `token ${token}` }
+          const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json?ref=main&t=${Date.now()}`, {
+            headers: { 'Authorization': `token ${token}` },
+            cache: 'no-store'
           });
           if (ghRes.ok) {
             const ghData = await ghRes.json();
             articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
           } else {
+            console.warn('GitHub API fetch failed, falling back to local file.');
             throw new Error('GitHub API Error');
           }
         } else {
-          const res = await fetch('../content/beyond-work/index.json', { cache: 'no-store' });
-          if (!res.ok) throw new Error();
+          const res = await fetch('../content/beyond-work/index.json?t=' + Date.now(), { cache: 'no-store' });
+          if (!res.ok) throw new Error('Local file not found');
           articles = await res.json();
         }
 
-        if (articles.length === 0) throw new Error();
+        if (!articles || articles.length === 0) throw new Error('No articles found');
 
         tbody.innerHTML = articles.map(a => {
           const isScheduled = a.status === 'Scheduled' || new Date(a.date) > new Date();
@@ -1058,11 +1060,13 @@
           scheduleTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No scheduled articles currently queued.</div>';
         }
 
-      } catch {
+      } catch (err) {
+        console.error("loadLiveArticles failed:", err);
         tbody.innerHTML = `
           <tr>
             <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
-              No articles published yet. Click <strong>"Write New Article"</strong> to compose your first post.
+              No articles published yet. Click <strong>"Write New Article"</strong> to compose your first post.<br>
+              <span style="font-size:0.75rem; color:#ef4444;">(Debug: ${err.message})</span>
             </td>
           </tr>
         `;

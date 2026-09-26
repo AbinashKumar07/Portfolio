@@ -11,7 +11,7 @@ const OUT = path.join(DIR, 'index.json');
 
 if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
 
-const files = fs.readdirSync(DIR).filter(f => f.endsWith('.json') && f !== 'index.json');
+const files = fs.readdirSync(DIR).filter(f => f.endsWith('.json') && f !== 'index.json' && f !== 'authors.json');
 const articles = files.map(f => JSON.parse(fs.readFileSync(path.join(DIR, f), 'utf-8')));
 
 fs.writeFileSync(OUT, JSON.stringify(articles, null, 2));

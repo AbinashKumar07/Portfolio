@@ -707,8 +707,14 @@
             <input type="url" id="newAuthorLinkedIn" class="form-input" placeholder="https://linkedin.com/in/..." required>
           </div>
           <div class="form-group">
-            <label class="form-label">Profile Pic (URL) *</label>
-            <input type="text" id="newAuthorPic" class="form-input" placeholder="e.g. assets/profile.png or https://..." required>
+            <label class="form-label">Profile Pic (Upload) *</label>
+            <div class="image-drop-zone" onclick="document.getElementById('authorImageInput').click()" style="padding: 1rem;">
+              <span style="font-size: 1.5rem;">📷</span>
+              <div style="font-size: 0.8125rem; font-weight: 700; color: var(--accent); margin-top: 0.35rem;">Choose image from device</div>
+              <div style="font-size: 0.6875rem; color: var(--text-muted); margin-top: 0.2rem;">PNG, JPG, WEBP</div>
+              <input type="file" id="authorImageInput" accept="image/*" style="display: none;" onchange="handleAuthorImagePick(event)">
+              <img id="authorImagePreview" class="image-preview-img" alt="Preview" style="max-height: 80px; margin: 0.75rem auto 0 auto; border-radius: 50%; width: 80px; object-fit: cover; display: none;">
+            </div>
           </div>
           <button type="submit" class="btn btn-primary">Add Author</button>
         </form>
@@ -1150,6 +1156,21 @@
     }
     // --- 10. AUTHORS MANAGEMENT LOGIC ---
     let authorsList = [];
+    let authorBase64ImageString = '';
+
+    function handleAuthorImagePick(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        authorBase64ImageString = evt.target.result;
+        const preview = document.getElementById('authorImagePreview');
+        preview.src = authorBase64ImageString;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
 
     async function loadAuthors() {
       const token = localStorage.getItem(GH_TOKEN_KEY);
@@ -1224,6 +1245,9 @@
       if (authorsList.length >= 5) {
         return alert('Maximum of 5 authors allowed.');
       }
+      if (!authorBase64ImageString) {
+        return alert('Please select a profile picture from your device.');
+      }
       
       const btn = e.target.querySelector('button[type="submit"]');
       const originalText = btn.textContent;
@@ -1233,7 +1257,7 @@
       const newAuthor = {
         name: document.getElementById('newAuthorName').value.trim(),
         linkedin: document.getElementById('newAuthorLinkedIn').value.trim(),
-        pic: document.getElementById('newAuthorPic').value.trim()
+        pic: authorBase64ImageString
       };
 
       authorsList.push(newAuthor);
@@ -1241,6 +1265,8 @@
       try {
         await saveAuthorsToGitHub();
         e.target.reset();
+        authorBase64ImageString = '';
+        document.getElementById('authorImagePreview').style.display = 'none';
         renderAuthors();
         alert('Author added successfully!');
       } catch(err) {

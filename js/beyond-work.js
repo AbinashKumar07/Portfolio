@@ -12,12 +12,12 @@ async function loadArticles() {
     
     if (token) {
       const repo = 'AbinashKumar07/Portfolio';
-      const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
-        headers: { 'Authorization': `token ${token}` }
+      const ghRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
+        headers: { 'Authorization': `token ${token}` },
+        cache: 'no-store'
       });
       if (ghRes.ok) {
-        const ghData = await ghRes.json();
-        articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
+        articles = await ghRes.json();
       } else {
         throw new Error('GitHub API Error');
       }
@@ -137,12 +137,12 @@ async function initSingleArticle() {
     const token = localStorage.getItem('gh_sync_token');
     if (token) {
       const repo = 'AbinashKumar07/Portfolio';
-      const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
-        headers: { 'Authorization': `token ${token}` }
+      const ghRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
+        headers: { 'Authorization': `token ${token}` },
+        cache: 'no-store'
       });
       if (ghRes.ok) {
-        const ghData = await ghRes.json();
-        articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
+        articles = await ghRes.json();
       } else {
         throw new Error('GitHub API Error');
       }

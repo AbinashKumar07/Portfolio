@@ -13,7 +13,6 @@ async function loadArticles() {
     if (token) {
       const repo = 'AbinashKumar07/Portfolio';
       const ghRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
-        headers: { 'Authorization': `token ${token}` },
         cache: 'no-store'
       });
       if (ghRes.ok) {
@@ -138,7 +137,6 @@ async function initSingleArticle() {
     if (token) {
       const repo = 'AbinashKumar07/Portfolio';
       const ghRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/content/beyond-work/index.json?t=${Date.now()}`, {
-        headers: { 'Authorization': `token ${token}` },
         cache: 'no-store'
       });
       if (ghRes.ok) {

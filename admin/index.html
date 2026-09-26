@@ -364,7 +364,6 @@
     .status-published { background: rgba(16, 185, 129, 0.15); color: #34d399; }
     .status-scheduled { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
 
-    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -377,6 +376,43 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       display: none;
       z-index: 10000;
+    }
+
+    /* ==================== MOBILE RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .admin-sidebar {
+        width: 100%;
+        min-height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .admin-main {
+        padding: 1.5rem 1rem;
+      }
+      .editor-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .top-bar h1 {
+        font-size: 1.4rem;
+      }
+      .article-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .auth-card {
+        width: 92%;
+        padding: 1.75rem;
+      }
     }
   </style>
 </head>

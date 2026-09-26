@@ -172,6 +172,8 @@ async function initSingleArticle() {
       canonicalTag.setAttribute('href', canonicalUrl);
     }
 
+    const authorNameText = article.author ? article.author.name : 'Abinash Kumar';
+
     // Google SEO Structured Data (JSON-LD)
     const jsonLd = {
       "@context": "https://schema.org",
@@ -181,8 +183,8 @@ async function initSingleArticle() {
       "image": seo.ogImage || article.coverImage || (window.location.origin + '/assets/profile.png'),
       "author": {
         "@type": "Person",
-        "name": "Abinash Kumar",
-        "url": window.location.origin
+        "name": authorNameText,
+        "url": article.author ? article.author.linkedin : window.location.origin
       },
       "datePublished": article.date,
       "dateModified": article.date
@@ -193,12 +195,25 @@ async function initSingleArticle() {
     document.head.appendChild(script);
 
     const dateStr = new Date(article.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    const authorHTML = article.author ? `
+      <div style="display:flex; align-items:center; gap:1rem; padding:1.25rem; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid var(--border); margin:2rem 0;">
+        <img src="${article.author.pic}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid var(--accent);">
+        <div>
+          <div style="font-weight:700; font-size:1.05rem;">${article.author.name}</div>
+          <a href="${article.author.linkedin}" target="_blank" style="font-size:0.875rem; color:#a78bfa; text-decoration:none; display:inline-block; margin-top:0.15rem;">Connect on LinkedIn ↗</a>
+        </div>
+      </div>
+    ` : '';
+
     container.innerHTML = `
       <span class="section-tag">${article.category}</span>
       <h1 class="bw-hero-title" style="margin-top:1rem;">${article.title}</h1>
-      <p style="color:var(--text-muted); font-size:0.9375rem; margin-bottom:2rem;">${dateStr} · by Abinash Kumar</p>
+      <p style="color:var(--text-muted); font-size:0.9375rem; margin-bottom:1rem;">${dateStr} · by ${authorNameText}</p>
+      ${authorHTML}
       <img src="${article.coverImage || 'assets/profile.png'}" alt="${article.title}" style="width:100%; border-radius:var(--radius-lg); margin-bottom:2.5rem; max-height:480px; object-fit:cover;">
       <div class="bw-article-body">${article.body}</div>
+      ${authorHTML}
     `;
   } catch (err) {
     container.innerHTML = '<div class="bw-empty-state"><h3>Unable to load article.</h3></div>';

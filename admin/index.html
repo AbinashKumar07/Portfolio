@@ -464,6 +464,9 @@
       </button>
 
       <div class="nav-header">Platform Settings</div>
+      <button class="nav-btn" id="btn-authors" onclick="switchView('authors')">
+        <span>👥</span><span>Authors (+/-)</span>
+      </button>
       <button class="nav-btn" id="btn-token" onclick="switchView('token')">
         <span>🔑</span><span>GitHub Sync Key</span>
       </button>
@@ -589,6 +592,15 @@
                 </select>
               </div>
 
+              <div class="form-group">
+                <label class="form-label">Publishing Author</label>
+                <select id="postAuthor" class="form-select">
+                  <option value="">Default (Abinash Kumar)</option>
+                  <!-- Dynamically populated -->
+                </select>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Manage authors in the Authors tab (Max 5)</div>
+              </div>
+
               <!-- Device Image Picker -->
               <div class="form-group">
                 <label class="form-label">Cover Image</label>
@@ -680,6 +692,42 @@
       </div>
     </div>
 
+    <!-- VIEW 5: AUTHORS LIST -->
+    <div id="authorsView" style="display: none;">
+      <div class="form-panel" style="max-width: 600px; margin-bottom: 2rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;">Add New Author</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">You can add up to 5 authors. Their profile will appear on published articles.</p>
+        <form onsubmit="addAuthor(event)">
+          <div class="form-group">
+            <label class="form-label">Author Name *</label>
+            <input type="text" id="newAuthorName" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">LinkedIn Profile URL *</label>
+            <input type="url" id="newAuthorLinkedIn" class="form-input" placeholder="https://linkedin.com/in/..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Profile Pic (URL) *</label>
+            <input type="text" id="newAuthorPic" class="form-input" placeholder="e.g. assets/profile.png or https://..." required>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Author</button>
+        </form>
+      </div>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th>Pic</th>
+            <th>Name</th>
+            <th>LinkedIn</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="authorsTableBody">
+        </tbody>
+      </table>
+    </div>
+
   </main>
 
   <div id="toast" class="toast">Article Published Live to Portfolio ✓</div>
@@ -726,6 +774,7 @@
       document.getElementById('editorView').style.display = viewName === 'editor' ? 'block' : 'none';
       document.getElementById('scheduleView').style.display = viewName === 'schedule' ? 'block' : 'none';
       document.getElementById('tokenView').style.display = viewName === 'token' ? 'block' : 'none';
+      document.getElementById('authorsView').style.display = viewName === 'authors' ? 'block' : 'none';
 
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       const activeBtn = document.getElementById(`btn-${viewName}`);
@@ -735,7 +784,8 @@
         'articles': 'Published Beyond Work Articles',
         'editor': 'Write New Beyond Work Article',
         'schedule': 'Editorial Calendar & Schedule',
-        'token': 'GitHub Repository Sync Key'
+        'token': 'GitHub Repository Sync Key',
+        'authors': 'Manage Publishing Authors'
       };
       document.getElementById('viewTitle').textContent = titles[viewName] || 'Editorial Studio';
     }
@@ -828,6 +878,9 @@
       const metaDescription = document.getElementById('postSeoDesc').value || excerpt;
       const keywords = document.getElementById('postKeywords').value || category;
 
+      const authorIdx = document.getElementById('postAuthor').value;
+      const authorObj = authorIdx !== "" ? authorsList[authorIdx] : null;
+
       const articleObj = {
         title,
         slug,
@@ -837,6 +890,7 @@
         coverImage: base64ImageString || 'assets/profile.png',
         date: fullDateTime,
         status,
+        author: authorObj,
         seo: { seoTitle, metaDescription, keywords, ogImage: base64ImageString || 'assets/profile.png' }
       };
 
@@ -1094,6 +1148,125 @@
         btn.innerHTML = 'Take Down';
       }
     }
+    // --- 10. AUTHORS MANAGEMENT LOGIC ---
+    let authorsList = [];
+
+    async function loadAuthors() {
+      const token = localStorage.getItem(GH_TOKEN_KEY);
+      const url = token 
+        ? `https://api.github.com/repos/AbinashKumar07/Portfolio/contents/content/beyond-work/authors.json`
+        : '../content/beyond-work/authors.json';
+
+      try {
+        const res = await fetch(url, token ? { headers: { 'Authorization': `token ${token}` } } : { cache: 'no-store' });
+        if (res.ok) {
+          if (token) {
+            const data = await res.json();
+            authorsList = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+          } else {
+            authorsList = await res.json();
+          }
+        }
+      } catch (err) {
+        console.warn('No authors list found or error loading:', err);
+      }
+      renderAuthors();
+    }
+
+    function renderAuthors() {
+      const tbody = document.getElementById('authorsTableBody');
+      if(tbody) {
+        tbody.innerHTML = authorsList.map((a, idx) => `
+          <tr>
+            <td><img src="${a.pic}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:1px solid var(--border);"></td>
+            <td>${a.name}</td>
+            <td><a href="${a.linkedin}" target="_blank" style="color:var(--accent);text-decoration:none;">Profile ↗</a></td>
+            <td><button onclick="removeAuthor(${idx})" style="background:var(--danger);color:#fff;border:none;padding:0.4rem 0.75rem;border-radius:6px;cursor:pointer;font-weight:700;">Remove</button></td>
+          </tr>
+        `).join('');
+      }
+
+      const select = document.getElementById('postAuthor');
+      if(select) {
+        select.innerHTML = '<option value="">Default (Abinash Kumar)</option>' + 
+          authorsList.map((a, idx) => `<option value="${idx}">${a.name}</option>`).join('');
+      }
+    }
+
+    async function saveAuthorsToGitHub() {
+      const token = localStorage.getItem(GH_TOKEN_KEY);
+      if (!token) throw new Error('GitHub Sync Key required.');
+      
+      const repo = 'AbinashKumar07/Portfolio';
+      const filePath = 'content/beyond-work/authors.json';
+      const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(authorsList, null, 2))));
+
+      let sha = null;
+      try {
+        const check = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, { headers: { 'Authorization': `token ${token}` }});
+        if (check.ok) sha = (await check.json()).sha;
+      } catch (err) {}
+
+      const body = { message: 'chore: update authors list', content: contentBase64 };
+      if (sha) body.sha = sha;
+
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      
+      if (!res.ok) throw new Error('Failed to save authors to GitHub.');
+    }
+
+    async function addAuthor(e) {
+      e.preventDefault();
+      if (authorsList.length >= 5) {
+        return alert('Maximum of 5 authors allowed.');
+      }
+      
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+
+      const newAuthor = {
+        name: document.getElementById('newAuthorName').value.trim(),
+        linkedin: document.getElementById('newAuthorLinkedIn').value.trim(),
+        pic: document.getElementById('newAuthorPic').value.trim()
+      };
+
+      authorsList.push(newAuthor);
+      
+      try {
+        await saveAuthorsToGitHub();
+        e.target.reset();
+        renderAuthors();
+        alert('Author added successfully!');
+      } catch(err) {
+        alert('Error saving author. Ensure your Sync Key is valid.');
+        authorsList.pop(); // Revert
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    async function removeAuthor(idx) {
+      if (confirm('Remove this author?')) {
+        const removed = authorsList.splice(idx, 1)[0];
+        try {
+          await saveAuthorsToGitHub();
+          renderAuthors();
+        } catch(err) {
+          alert('Error removing author.');
+          authorsList.splice(idx, 0, removed); // Revert
+        }
+      }
+    }
+
+    // Load authors initially
+    loadAuthors();
   </script>
 </body>
 </html>

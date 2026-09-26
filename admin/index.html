@@ -1044,6 +1044,7 @@
               <td><span class="status-pill ${statusClass}">${statusText}</span></td>
               <td style="display: flex; gap: 0.5rem;">
                 <a href="../beyond-work-article.html?slug=${a.slug}" target="_blank" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">View Live ↗</a>
+                <button onclick="editArticle('${a.slug}', this)" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-color: #3b82f6; color: #3b82f6;">Edit</button>
                 <button onclick="takeDownArticle('${a.slug}', '${a.title.replace(/'/g, "\\'")}', this)" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-color: #ef4444; color: #ef4444;">Take Down</button>
               </td>
             </tr>
@@ -1085,6 +1086,59 @@
     checkAuth();
     if (localStorage.getItem(GH_TOKEN_KEY)) {
       document.getElementById('ghTokenInput').value = localStorage.getItem(GH_TOKEN_KEY);
+    }
+
+    async function editArticle(slug, btn) {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Loading...';
+      btn.disabled = true;
+      try {
+        const repo = 'AbinashKumar07/Portfolio';
+        const rawUrl = `https://raw.githubusercontent.com/${repo}/main/content/beyond-work/${slug}.json?t=${Date.now()}`;
+        const res = await fetch(rawUrl);
+        if (!res.ok) throw new Error('Failed to fetch article data');
+        const a = await res.json();
+        
+        // Populate form
+        document.getElementById('postTitle').value = a.title;
+        document.getElementById('postSlug').value = a.slug;
+        document.getElementById('postCategory').value = a.category;
+        document.getElementById('postExcerpt').value = a.excerpt;
+        document.getElementById('richEditor').innerHTML = a.body;
+        
+        if (a.date) {
+          const dt = new Date(a.date);
+          const yyyy = dt.getFullYear();
+          const mm = String(dt.getMonth() + 1).padStart(2, '0');
+          const dd = String(dt.getDate()).padStart(2, '0');
+          document.getElementById('postDate').value = `${yyyy}-${mm}-${dd}`;
+          
+          const HH = String(dt.getHours()).padStart(2, '0');
+          const MM = String(dt.getMinutes()).padStart(2, '0');
+          document.getElementById('postTime').value = `${HH}:${MM}`;
+        }
+        
+        if (a.seo) {
+          document.getElementById('postSeoTitle').value = a.seo.seoTitle || '';
+          document.getElementById('postSeoDesc').value = a.seo.metaDescription || '';
+          document.getElementById('postKeywords').value = a.seo.keywords || '';
+        }
+
+        if (a.coverImage) {
+          base64ImageString = a.coverImage;
+          const preview = document.getElementById('imagePreview');
+          preview.src = base64ImageString;
+          preview.style.display = 'block';
+        }
+        
+        switchView('editor');
+      } catch (err) {
+        alert('Could not load article for editing.');
+        console.error(err);
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     }
 
     async function takeDownArticle(slug, title, btn) {

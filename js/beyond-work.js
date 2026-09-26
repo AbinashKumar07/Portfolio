@@ -7,9 +7,26 @@ const BW_CONTENT_INDEX = 'content/beyond-work/index.json';
 
 async function loadArticles() {
   try {
-    const res = await fetch(BW_CONTENT_INDEX, { cache: 'no-store' });
-    if (!res.ok) throw new Error('No index file found');
-    const articles = await res.json();
+    let articles = [];
+    const token = localStorage.getItem('gh_sync_token');
+    
+    if (token) {
+      const repo = 'AbinashKumar07/Portfolio';
+      const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+        headers: { 'Authorization': `token ${token}` }
+      });
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
+      } else {
+        throw new Error('GitHub API Error');
+      }
+    } else {
+      const res = await fetch(BW_CONTENT_INDEX, { cache: 'no-store' });
+      if (!res.ok) throw new Error('No index file found');
+      articles = await res.json();
+    }
+
     const now = new Date();
     
     // Only display articles that are marked Published and whose scheduled date has arrived
@@ -56,8 +73,37 @@ async function initBeyondWorkGrid() {
     return;
   }
 
-  const render = (list) => { grid.innerHTML = list.map(renderCard).join(''); };
-  render(articles);
+  let currentRendered = 0;
+  const PAGE_SIZE = 9;
+  let currentFilteredList = articles;
+
+  const loadMoreBtn = document.createElement('button');
+  loadMoreBtn.className = 'btn btn-secondary';
+  loadMoreBtn.style.margin = '3rem auto 0';
+  loadMoreBtn.style.display = 'flex';
+  loadMoreBtn.innerHTML = '<span>Load More</span>';
+  loadMoreBtn.onclick = () => render(currentFilteredList, true);
+
+  const render = (list, append = false) => {
+    if (!append) {
+      grid.innerHTML = '';
+      currentRendered = 0;
+    }
+    
+    const nextBatch = list.slice(currentRendered, currentRendered + PAGE_SIZE);
+    if (nextBatch.length > 0) {
+      grid.insertAdjacentHTML('beforeend', nextBatch.map(renderCard).join(''));
+      currentRendered += nextBatch.length;
+    }
+
+    if (currentRendered >= list.length) {
+      if (loadMoreBtn.parentNode) loadMoreBtn.parentNode.removeChild(loadMoreBtn);
+    } else {
+      if (!loadMoreBtn.parentNode) grid.parentNode.appendChild(loadMoreBtn);
+    }
+  };
+
+  render(currentFilteredList);
 
   const filterBtns = document.querySelectorAll('.bw-filter-btn');
   filterBtns.forEach(btn => {
@@ -65,13 +111,15 @@ async function initBeyondWorkGrid() {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const filter = btn.getAttribute('data-filter');
-      const filtered = filter === 'all' ? articles : articles.filter(a => a.category === filter);
-      if (filtered.length === 0) {
+      currentFilteredList = filter === 'all' ? articles : articles.filter(a => a.category === filter);
+      
+      if (currentFilteredList.length === 0) {
         grid.innerHTML = '';
+        if (loadMoreBtn.parentNode) loadMoreBtn.parentNode.removeChild(loadMoreBtn);
         if (emptyState) emptyState.style.display = 'block';
       } else {
         if (emptyState) emptyState.style.display = 'none';
-        render(filtered);
+        render(currentFilteredList, false);
       }
     });
   });
@@ -85,8 +133,23 @@ async function initSingleArticle() {
   const slug = params.get('slug');
   
   try {
-    const res = await fetch(BW_CONTENT_INDEX, { cache: 'no-store' });
-    const articles = await res.json();
+    let articles = [];
+    const token = localStorage.getItem('gh_sync_token');
+    if (token) {
+      const repo = 'AbinashKumar07/Portfolio';
+      const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+        headers: { 'Authorization': `token ${token}` }
+      });
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
+      } else {
+        throw new Error('GitHub API Error');
+      }
+    } else {
+      const res = await fetch(BW_CONTENT_INDEX, { cache: 'no-store' });
+      articles = await res.json();
+    }
     const article = articles.find(a => a.slug === slug);
 
     if (!article) {
@@ -100,7 +163,34 @@ async function initSingleArticle() {
     setMeta('keywords', seo.keywords || '');
     setOgMeta('og:title', seo.seoTitle || article.title);
     setOgMeta('og:description', seo.metaDescription || article.excerpt);
-    setOgMeta('og:image', seo.ogImage || article.coverImage || 'assets/profile.jpg');
+    setOgMeta('og:image', seo.ogImage || article.coverImage || 'assets/profile.png');
+    
+    // Dynamic Canonical URL
+    const canonicalUrl = window.location.origin + window.location.pathname + '?slug=' + slug;
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (canonicalTag) {
+      canonicalTag.setAttribute('href', canonicalUrl);
+    }
+
+    // Google SEO Structured Data (JSON-LD)
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": seo.seoTitle || article.title,
+      "description": seo.metaDescription || article.excerpt,
+      "image": seo.ogImage || article.coverImage || (window.location.origin + '/assets/profile.png'),
+      "author": {
+        "@type": "Person",
+        "name": "Abinash Kumar",
+        "url": window.location.origin
+      },
+      "datePublished": article.date,
+      "dateModified": article.date
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
 
     const dateStr = new Date(article.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     container.innerHTML = `

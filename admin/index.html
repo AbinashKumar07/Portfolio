@@ -392,7 +392,7 @@
       <form onsubmit="handleLogin(event)">
         <div class="form-group" style="text-align: left;">
           <label class="form-label">User ID / Username</label>
-          <input type="text" id="authUsername" class="form-input" placeholder="abinash" required autocomplete="username">
+          <input type="text" id="authUsername" class="form-input" placeholder="admin@abinash.com" required autocomplete="username">
         </div>
         <div class="form-group" style="text-align: left;">
           <label class="form-label">Password</label>
@@ -670,7 +670,7 @@
       const u = document.getElementById('authUsername').value.trim();
       const p = document.getElementById('authPassword').value;
 
-      if ((u === 'abinash' || u === 'admin') && (p === 'admin' || p === 'Abinash2026!' || p === 'Admin2026!')) {
+      if (u === 'admin@abinash.com' && p === 'Abinash@2005') {
         localStorage.setItem(AUTH_KEY, 'authenticated');
         document.getElementById('authOverlay').style.display = 'none';
         loadLiveArticles();
@@ -902,9 +902,26 @@
       const tbody = document.getElementById('articleTableBody');
       const scheduleTimeline = document.getElementById('scheduleTimelineList');
       try {
-        const res = await fetch('../content/beyond-work/index.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error();
-        const articles = await res.json();
+        let articles = [];
+        const token = localStorage.getItem(GH_TOKEN_KEY);
+        
+        if (token) {
+          const repo = 'AbinashKumar07/Portfolio';
+          const ghRes = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+            headers: { 'Authorization': `token ${token}` }
+          });
+          if (ghRes.ok) {
+            const ghData = await ghRes.json();
+            articles = JSON.parse(decodeURIComponent(escape(atob(ghData.content))));
+          } else {
+            throw new Error('GitHub API Error');
+          }
+        } else {
+          const res = await fetch('../content/beyond-work/index.json', { cache: 'no-store' });
+          if (!res.ok) throw new Error();
+          articles = await res.json();
+        }
+
         if (articles.length === 0) throw new Error();
 
         tbody.innerHTML = articles.map(a => {
@@ -919,7 +936,10 @@
               <td>${new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
               <td>${a.seo ? a.seo.seoTitle : a.title}</td>
               <td><span class="status-pill ${statusClass}">${statusText}</span></td>
-              <td><a href="../beyond-work-article.html?slug=${a.slug}" target="_blank" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">View Live ↗</a></td>
+              <td style="display: flex; gap: 0.5rem;">
+                <a href="../beyond-work-article.html?slug=${a.slug}" target="_blank" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">View Live ↗</a>
+                <button onclick="takeDownArticle('${a.slug}', '${a.title.replace(/'/g, "\\'")}', this)" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-color: #ef4444; color: #ef4444;">Take Down</button>
+              </td>
             </tr>
           `;
         }).join('');
@@ -957,6 +977,86 @@
     checkAuth();
     if (localStorage.getItem(GH_TOKEN_KEY)) {
       document.getElementById('ghTokenInput').value = localStorage.getItem(GH_TOKEN_KEY);
+    }
+
+    async function takeDownArticle(slug, title, btn) {
+      if (!confirm(`Are you sure you want to take down "${title}"? This cannot be undone.`)) return;
+      
+      const token = localStorage.getItem(GH_TOKEN_KEY);
+      if (!token) {
+        alert('Please save your GitHub Sync Key in the sidebar first.');
+        return switchView('token');
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = 'Taking down...';
+
+      try {
+        const repo = 'AbinashKumar07/Portfolio';
+        
+        // 1. Get SHA of the article file
+        let articleSha = null;
+        try {
+          const check = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/${slug}.json`, {
+            headers: { 'Authorization': `token ${token}` }
+          });
+          if (check.ok) articleSha = (await check.json()).sha;
+        } catch(e) {}
+
+        if (articleSha) {
+          // Delete article file
+          await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/${slug}.json`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `token ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `chore: take down article ${slug}`,
+              sha: articleSha
+            })
+          });
+        }
+
+        // 2. Fetch and update the master index.json manifest
+        let currentArticles = [];
+        let indexSha = null;
+        try {
+          const indexCheck = await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+            headers: { 'Authorization': `token ${token}` }
+          });
+          if (indexCheck.ok) {
+            const indexData = await indexCheck.json();
+            indexSha = indexData.sha;
+            currentArticles = JSON.parse(decodeURIComponent(escape(atob(indexData.content))));
+          }
+        } catch(e) {}
+
+        currentArticles = currentArticles.filter(a => a.slug !== slug);
+        const newIndexBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentArticles, null, 2))));
+        
+        if (indexSha) {
+          await fetch(`https://api.github.com/repos/${repo}/contents/content/beyond-work/index.json`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `chore: update beyond-work manifest after taking down ${slug}`,
+              content: newIndexBase64,
+              sha: indexSha
+            })
+          });
+        }
+
+        showToast('Article taken down successfully! Netlify will update in 30s.');
+        loadLiveArticles();
+      } catch (err) {
+        alert(`Take down Error: ${err.message}`);
+        btn.disabled = false;
+        btn.innerHTML = 'Take Down';
+      }
     }
   </script>
 </body>

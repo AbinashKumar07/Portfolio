@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abinashkumar07.github.io/Portfolio/sitemap.xml

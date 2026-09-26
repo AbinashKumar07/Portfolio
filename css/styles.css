@@ -19,6 +19,7 @@
   --bg-dark-card: #121217;
   --bg-dark-border: #22222a;
   
+  /* Consolidated Text Colors (#2 — aim ≤12) */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
@@ -44,14 +45,24 @@
   --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
   --shadow-xl: 0 20px 40px -8px rgba(121, 82, 232, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
 
-  /* Typography */
+  /* Typography — Consolidated type scale (#1 — aim ≤10 sizes) */
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-serif: 'Newsreader', 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --fs-xs: 0.75rem;    /* 12px — captions, badges */
+  --fs-sm: 0.8125rem;  /* 13px — labels, small UI */
+  --fs-base: 0.875rem; /* 14px — body small */
+  --fs-md: 1rem;       /* 16px — body */
+  --fs-lg: 1.125rem;   /* 18px — lead text */
+  --fs-xl: 1.25rem;    /* 20px — card titles */
+  --fs-2xl: 1.5rem;    /* 24px — sub-headings */
+  --fs-3xl: clamp(2.25rem, 4vw, 3.25rem); /* section headings */
+  --fs-4xl: clamp(2.75rem, 5.5vw, 4.5rem); /* hero title */
 
-  /* Layout & Transitions */
+  /* Layout & Transitions — Consolidated radii (#3 — aim ≤6) */
   --container-max: 1240px;
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
@@ -93,7 +104,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
+  font-size: var(--fs-md);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -154,10 +165,10 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none; /* #5 — Sentence case for better readability */
   color: var(--accent-purple);
   margin-bottom: 1.25rem;
   background: var(--accent-purple-subtle);
@@ -195,7 +206,7 @@ ul, ol {
 }
 
 .section-subtitle {
-  font-size: 1.125rem;
+  font-size: var(--fs-lg);
   color: var(--text-secondary);
   max-width: 620px;
   line-height: 1.65;
@@ -219,7 +230,7 @@ ul, ol {
   justify-content: center;
   gap: 0.6rem;
   padding: 0.85rem 1.75rem;
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   font-weight: 600;
   border-radius: var(--radius-full);
   transition: all var(--transition-normal);
@@ -306,7 +317,7 @@ ul, ol {
   align-items: center;
   gap: 0.75rem;
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: var(--fs-md);
   letter-spacing: -0.02em;
   color: var(--text-primary);
   white-space: nowrap;
@@ -338,7 +349,7 @@ ul, ol {
 }
 
 .nav-link {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 500;
   color: var(--text-secondary);
   position: relative;
@@ -365,6 +376,58 @@ ul, ol {
   width: 100%;
 }
 
+/* #14 — Nav dropdown for grouped secondary links */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-trigger {
+  cursor: pointer;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.4rem 0;
+}
+
+.nav-dropdown-trigger::after {
+  display: none; /* suppress the nav-link underline on the dropdown trigger */
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem 0;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+  z-index: 100;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown-menu:focus-within {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown-menu .nav-link {
+  display: block;
+  padding: 0.5rem 1.25rem;
+  font-size: var(--fs-base);
+  white-space: nowrap;
+}
+
+.nav-dropdown-menu .nav-link::after {
+  display: none; /* no underline inside dropdown items */
+}
+
 .nav-actions {
   display: flex;
   align-items: center;
@@ -385,7 +448,7 @@ ul, ol {
   width: 66px;
   height: 34px;
   background: #e2e8f0;
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
   border: 2px solid #cbd5e1;
   display: flex;
   align-items: center;
@@ -403,7 +466,7 @@ ul, ol {
 }
 
 .switch-icon-sun {
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: #f59e0b;
   line-height: 1;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -411,7 +474,7 @@ ul, ol {
 }
 
 .switch-icon-moon {
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: #a78bfa;
   line-height: 1;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -432,7 +495,7 @@ ul, ol {
   align-items: center;
   justify-content: center;
   transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 [data-theme="dark"] .theme-switch-thumb {
@@ -444,7 +507,7 @@ ul, ol {
 
 .mobile-toggle {
   display: none;
-  font-size: 1.5rem;
+  font-size: var(--fs-2xl);
   color: var(--text-primary);
 }
 
@@ -477,11 +540,12 @@ ul, ol {
   background: var(--accent-purple-subtle);
   border: 1px solid rgba(121, 82, 232, 0.2);
   border-radius: var(--radius-full);
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--accent-purple-dark);
   margin-bottom: 1.75rem;
+  text-transform: none; /* #5 — remove inherited uppercase for long text */
 }
 
 [data-theme="dark"] .hero-pill {
@@ -518,18 +582,19 @@ ul, ol {
 }
 
 .hero-description {
-  font-size: 1.1875rem;
+  font-size: var(--fs-lg);
   color: var(--text-secondary);
   line-height: 1.65;
   margin-bottom: 2.25rem;
   max-width: 560px;
 }
 
+/* #17 — Align all three CTAs in a single horizontal row */
 .hero-cta-group {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
+  gap: 1rem;
+  flex-wrap: nowrap;
 }
 
 /* --- Hero Visual Card & B&W -> Color on Hover Transition --- */
@@ -575,7 +640,7 @@ ul, ol {
   position: relative;
   width: 100%;
   height: 480px;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: #111116;
 }
@@ -607,9 +672,9 @@ ul, ol {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
   animation: floatSlow 5s ease-in-out infinite;
 }
 
@@ -621,8 +686,8 @@ ul, ol {
 
 .badge-floating-bottom {
   position: absolute;
-  bottom: -1.25rem;
-  left: -1rem;
+  bottom: 1.5rem; /* #8 Inset instead of overlap */
+  left: 1.5rem;   /* #8 Inset instead of overlap */
   background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -637,7 +702,7 @@ ul, ol {
 }
 
 .badge-floating-bottom .badge-title {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -645,7 +710,7 @@ ul, ol {
 }
 
 .badge-floating-bottom .badge-sub {
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
 }
 
@@ -678,7 +743,7 @@ ul, ol {
 
 .editorial-lead {
   font-family: var(--font-serif);
-  font-size: 1.625rem;
+  font-size: var(--fs-2xl);
   line-height: 1.45;
   color: var(--text-primary);
   font-style: italic;
@@ -686,7 +751,7 @@ ul, ol {
 }
 
 .editorial-body {
-  font-size: 1.0625rem;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   line-height: 1.75;
   margin-bottom: 1.5rem;
@@ -720,7 +785,7 @@ ul, ol {
 }
 
 .author-sig-info .role {
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
 }
 
@@ -787,7 +852,7 @@ ul, ol {
   justify-content: center;
   text-align: center;
   font-weight: 800;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   box-shadow: 0 0 25px rgba(121, 82, 232, 0.4);
   cursor: pointer;
   transition: transform var(--transition-fast);
@@ -804,7 +869,7 @@ ul, ol {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
@@ -841,7 +906,7 @@ ul, ol {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   text-align: center;
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   width: 100%;
   min-height: 52px;
@@ -908,7 +973,7 @@ ul, ol {
 }
 
 .metric-label {
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   color: var(--text-light-muted);
   line-height: 1.4;
 }
@@ -957,7 +1022,7 @@ ul, ol {
 
 .accordion-index {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: var(--accent-purple);
   background: var(--accent-purple-subtle);
@@ -970,27 +1035,29 @@ ul, ol {
 }
 
 .accordion-title {
-  font-size: 1.3125rem;
+  font-size: var(--fs-xl);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
+/* #16 — Consistent icon container in both states; + rotates to – (not ×) */
 .accordion-icon {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--bg-secondary);
+  background: var(--accent-purple-subtle);
+  border: 1px solid rgba(121, 82, 232, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-primary);
+  color: var(--accent-purple);
   font-size: 1.1rem;
-  transition: transform var(--transition-normal), background-color var(--transition-fast);
+  transition: transform var(--transition-normal), background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .accordion-item.active .accordion-icon {
-  transform: rotate(45deg);
+  transform: rotate(0deg);
   background: var(--accent-purple);
   color: #ffffff;
 }
@@ -998,7 +1065,7 @@ ul, ol {
 .accordion-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease-out, padding 0.3s ease;
+  transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), padding 0.35s ease; /* #15 — smoother expand */
   padding: 0 2rem;
 }
 
@@ -1006,11 +1073,12 @@ ul, ol {
   padding: 0 2rem 2rem 2rem;
 }
 
+/* #8 — Increase breathing room between accordion header and body */
 .accordion-inner {
-  padding-top: 0.75rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: var(--fs-md);
   line-height: 1.7;
 }
 
@@ -1021,13 +1089,21 @@ ul, ol {
   margin-top: 1.25rem;
 }
 
+/* #9 — Give accordion tags clear pill affordance so they read as static labels */
 .accordion-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  padding: 0.3rem 0.85rem;
+  background: var(--accent-purple-subtle);
+  color: var(--accent-purple-dark);
+  border: 1px solid rgba(121, 82, 232, 0.18);
   border-radius: var(--radius-full);
+}
+
+[data-theme="dark"] .accordion-tag {
+  color: #c4b5fd;
+  background: rgba(121, 82, 232, 0.15);
+  border-color: rgba(121, 82, 232, 0.25);
 }
 
 /* ==================== SECTION 3: SELECTED WORK (DIRECT LIVE LINKS) ==================== */
@@ -1036,12 +1112,12 @@ ul, ol {
   border-top: 1px solid var(--border-subtle);
 }
 
+/* #10 + #19 — Equal vertical breathing room around filter row; flush left alignment */
 .work-header-wrap {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 2.5rem;
-  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -1055,11 +1131,12 @@ ul, ol {
   flex-wrap: wrap;
 }
 
+/* #4 — Consolidate button style to use design-token radius */
 .filter-btn {
   padding: 0.55rem 1.2rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 600;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   border: 1px solid var(--border-light);
   background: var(--bg-card);
   color: var(--text-secondary);
@@ -1084,10 +1161,11 @@ ul, ol {
   gap: 1.75rem;
 }
 
+/* #3 — Use design-token radius instead of ad-hoc 6px */
 .portfolio-card {
   background: var(--bg-card);
   border: 1.5px solid var(--border-light);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   transition: all var(--transition-normal);
   display: flex;
@@ -1130,18 +1208,22 @@ ul, ol {
   z-index: 2;
 }
 
+/* #20 — Increase contrast of card index number & arrow */
 .portfolio-index-tag {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
-  color: #7952e8;
+  color: var(--accent-purple);
+  opacity: 0.85;
 }
 
+/* #21 — Hide the redundant top-right arrow icon; the CTA ↗ is sufficient */
 .portfolio-arrow-icon {
-  font-size: 1.15rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
-  color: #7952e8;
+  color: var(--accent-purple);
   transition: transform var(--transition-fast);
+  display: none;
 }
 
 .portfolio-card:hover .portfolio-arrow-icon {
@@ -1175,7 +1257,7 @@ ul, ol {
 }
 
 .portfolio-client {
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: #78716c;
   margin-bottom: 0.4rem;
@@ -1186,7 +1268,7 @@ ul, ol {
 }
 
 .portfolio-title {
-  font-size: 1.35rem;
+  font-size: var(--fs-xl);
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -1195,7 +1277,7 @@ ul, ol {
 }
 
 .portfolio-link {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: var(--accent-purple);
   display: inline-flex;
@@ -1284,8 +1366,8 @@ ul, ol {
 
 .cert-zoom-pill {
   background: #ffffff;
-  color: #0f172a;
-  font-size: 0.8125rem;
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
   font-weight: 700;
   padding: 0.5rem 1rem;
   border-radius: var(--radius-full);
@@ -1295,36 +1377,44 @@ ul, ol {
   gap: 0.4rem;
 }
 
+/* #12 — Increase bottom padding to match sides */
 .cert-body {
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
+/* #11 — Allow issuer & date to wrap when cramped */
 .cert-meta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   margin-bottom: 0.75rem;
 }
 
 .cert-issuer {
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--accent-purple);
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .cert-date {
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cert-title {
-  font-size: 1.25rem;
+  font-size: var(--fs-xl);
   font-weight: 800;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
@@ -1332,7 +1422,7 @@ ul, ol {
 }
 
 .cert-description {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.25rem;
@@ -1347,10 +1437,11 @@ ul, ol {
   border-top: 1px solid var(--border-subtle);
 }
 
+/* #6 — Bump from 11px to 12px minimum for readability */
 .cert-badge-pill {
-  font-size: 0.6875rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
-  padding: 0.25rem 0.65rem;
+  padding: 0.3rem 0.75rem;
   border-radius: var(--radius-full);
   background: #ecfdf5;
   color: #047857;
@@ -1361,13 +1452,23 @@ ul, ol {
   color: #6ee7b7;
 }
 
+/* #13 — Make the primary CTA more visually prominent */
 .cert-view-cta {
-  font-size: 0.8125rem;
+  font-size: var(--fs-base);
   font-weight: 700;
-  color: var(--accent-purple);
+  color: #fff;
+  background: var(--accent-purple);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.cert-view-cta:hover {
+  background: var(--accent-purple-dark);
+  transform: translateY(-1px);
 }
 
 /* Certificate Lightbox Modal */
@@ -1377,11 +1478,12 @@ ul, ol {
   padding: 2rem;
 }
 
+/* #3 — Use design-token radius */
 .cert-full-view {
   width: 100%;
   max-height: 65vh;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
   margin-bottom: 1.5rem;
@@ -1415,7 +1517,7 @@ ul, ol {
   position: relative;
   width: 100%;
   max-width: 380px;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 35px rgba(121, 82, 232, 0.18);
   border: 1px solid var(--border-light);
@@ -1441,7 +1543,7 @@ ul, ol {
   color: #f8fafc;
   padding: 0.35rem 0.85rem;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.05em;
   backdrop-filter: blur(8px);
@@ -1475,7 +1577,7 @@ ul, ol {
 }
 
 .book-toggle-title-wrap h3 {
-  font-size: 1.5rem;
+  font-size: var(--fs-2xl);
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -1483,7 +1585,7 @@ ul, ol {
 }
 
 .book-toggle-subtitle {
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   color: var(--accent-purple);
   font-weight: 600;
 }
@@ -1497,7 +1599,7 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: var(--fs-xl);
   font-weight: 700;
   transition: transform var(--transition-normal);
 }
@@ -1519,7 +1621,7 @@ ul, ol {
 }
 
 .book-summary-text {
-  font-size: 1.05rem;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: 1.5rem;
@@ -1527,14 +1629,14 @@ ul, ol {
 
 .book-key-takeaways {
   background: var(--bg-secondary);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 1.25rem;
   border: 1px solid var(--border-light);
   margin-bottom: 1.75rem;
 }
 
 .book-takeaway-title {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1549,7 +1651,7 @@ ul, ol {
 }
 
 .book-takeaway-item {
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   display: flex;
   align-items: flex-start;
@@ -1591,12 +1693,12 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: var(--fs-xl);
   margin-bottom: 1.25rem;
 }
 
 .toolkit-col-title {
-  font-size: 1.15rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 1.25rem;
@@ -1605,11 +1707,11 @@ ul, ol {
 .toolkit-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem; /* #13 — Increase whitespace between items */
 }
 
 .toolkit-item {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
@@ -1620,7 +1722,7 @@ ul, ol {
   content: '✓';
   color: var(--accent-purple);
   font-weight: 800;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
 }
 
 .toolkit-callouts {
@@ -1638,14 +1740,14 @@ ul, ol {
 }
 
 .callout-title {
-  font-size: 1.2rem;
+  font-size: var(--fs-xl);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .callout-desc {
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -1684,7 +1786,7 @@ ul, ol {
   font-size: clamp(2.5rem, 4.5vw, 3.75rem);
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 1.1;
+  line-height: 1.25; /* #22 Increased leading */
   margin-bottom: 1.5rem;
 }
 
@@ -1694,7 +1796,7 @@ ul, ol {
 }
 
 .cta-lead {
-  font-size: 1.125rem;
+  font-size: var(--fs-lg);
   color: var(--text-light-muted);
   line-height: 1.7;
   margin-bottom: 2.5rem;
@@ -1714,7 +1816,7 @@ ul, ol {
   color: #ffffff;
   padding: 0.85rem 1.4rem;
   border-radius: var(--radius-full);
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -1733,7 +1835,7 @@ ul, ol {
 .contact-card {
   background: var(--bg-dark-card);
   border: 1px solid var(--bg-dark-border);
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
@@ -1744,21 +1846,21 @@ ul, ol {
 
 .form-label {
   display: block;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--text-muted);
   margin-bottom: 0.4rem;
 }
 
 .form-control {
   width: 100%;
   padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12); /* Increased contrast */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Increased contrast */
   border-radius: var(--radius-md);
   color: #ffffff;
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   transition: all var(--transition-fast);
 }
 
@@ -1784,7 +1886,7 @@ textarea.form-control {
 .site-footer {
   background: #08080a;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
+  color: var(--text-muted);
   padding: 5rem 0 2.5rem 0;
 }
 
@@ -1801,14 +1903,14 @@ textarea.form-control {
 }
 
 .footer-bio {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   line-height: 1.6;
-  color: #64748b;
+  color: var(--text-secondary);
   max-width: 320px;
 }
 
 .footer-col-title {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1823,8 +1925,8 @@ textarea.form-control {
 }
 
 .footer-link {
-  font-size: 0.875rem;
-  color: #94a3b8;
+  font-size: var(--fs-base);
+  color: var(--text-muted);
   transition: color var(--transition-fast);
 }
 
@@ -1835,7 +1937,7 @@ textarea.form-control {
 .footer-book-card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 1.25rem;
   display: flex;
   gap: 1rem;
@@ -1854,13 +1956,13 @@ textarea.form-control {
 .footer-book-thumb {
   width: 58px;
   height: 82px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   object-fit: cover;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .footer-book-info h5 {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: #ffffff;
   line-height: 1.3;
@@ -1868,7 +1970,7 @@ textarea.form-control {
 }
 
 .footer-book-info p {
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   color: #a78bfa;
   font-weight: 600;
 }
@@ -1879,7 +1981,7 @@ textarea.form-control {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -1917,7 +2019,7 @@ textarea.form-control {
 }
 
 .resume-candidate-role {
-  font-size: 1.35rem;
+  font-size: var(--fs-xl);
   font-weight: 700;
   color: var(--accent-purple);
   margin-bottom: 1.25rem;
@@ -1934,7 +2036,7 @@ textarea.form-control {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-secondary);
   background: var(--bg-card);
@@ -1956,7 +2058,7 @@ textarea.form-control {
 }
 
 .resume-block-title {
-  font-size: 1.45rem;
+  font-size: var(--fs-2xl);
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -2005,20 +2107,20 @@ textarea.form-control {
 }
 
 .resume-exp-role {
-  font-size: 1.25rem;
+  font-size: var(--fs-xl);
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .resume-exp-company {
-  font-size: 1rem;
+  font-size: var(--fs-md);
   font-weight: 700;
   color: var(--accent-purple);
 }
 
 .resume-exp-date {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   background: var(--accent-purple-subtle);
   color: var(--accent-purple-dark);
@@ -2039,7 +2141,7 @@ textarea.form-control {
 .resume-bullet-item {
   position: relative;
   padding-left: 1.5rem;
-  font-size: 0.9375rem;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   line-height: 1.65;
 }
@@ -2067,7 +2169,7 @@ textarea.form-control {
 }
 
 .resume-skill-subtitle {
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -2082,7 +2184,7 @@ textarea.form-control {
 }
 
 .resume-chip {
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
   padding: 0.35rem 0.75rem;
   background: var(--bg-secondary);
@@ -2154,7 +2256,7 @@ textarea.form-control {
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   overflow-y: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transform: translateY(20px) scale(0.97);
@@ -2178,7 +2280,7 @@ textarea.form-control {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: var(--fs-xl);
   color: var(--text-primary);
   transition: all var(--transition-fast);
   z-index: 10;
@@ -2204,7 +2306,7 @@ textarea.form-control {
   padding: 0.85rem 1.4rem;
   border-radius: var(--radius-full);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  font-size: 0.875rem;
+  font-size: var(--fs-base);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -2263,6 +2365,7 @@ textarea.form-control {
   }
   .hero-cta-group {
     justify-content: center;
+    flex-wrap: wrap; /* allow wrapping on small screens */
   }
   .hero-visual {
     margin-top: 2rem;

@@ -243,6 +243,9 @@ function initPracticeAccordion() {
         other.classList.remove('active');
         const content = other.querySelector('.accordion-content');
         if (content) content.style.maxHeight = null;
+        // #16 — Reset icon to + when closing
+        const icon = other.querySelector('.accordion-icon');
+        if (icon) icon.textContent = '+';
       });
 
       if (!isActive) {
@@ -251,6 +254,9 @@ function initPracticeAccordion() {
         if (content) {
           content.style.maxHeight = content.scrollHeight + 'px';
         }
+        // #16 — Set icon to − (minus) when opening
+        const icon = item.querySelector('.accordion-icon');
+        if (icon) icon.textContent = '−';
       }
     });
   });
@@ -262,6 +268,9 @@ function initPracticeAccordion() {
     if (firstContent) {
       firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
     }
+    // #16 — Set first item icon to −
+    const firstIcon = first.querySelector('.accordion-icon');
+    if (firstIcon) firstIcon.textContent = '−';
   }
 }
 

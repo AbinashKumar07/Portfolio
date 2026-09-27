@@ -204,7 +204,46 @@ async function initSingleArticle() {
       </div>
     ` : '';
 
+    const now = new Date();
+    const publishedArticles = articles
+      .filter(a => a.status === 'Published' && new Date(a.date) <= now)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const currentIndex = publishedArticles.findIndex(a => a.slug === slug);
+    let prevArticle = null;
+    let nextArticle = null;
+    
+    if (currentIndex !== -1) {
+      if (currentIndex < publishedArticles.length - 1) {
+        prevArticle = publishedArticles[currentIndex + 1];
+      }
+      if (currentIndex > 0) {
+        nextArticle = publishedArticles[currentIndex - 1];
+      }
+    }
+
+    const topNavHTML = `
+      <div class="bw-article-nav-top" style="display: flex; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;">
+        ${prevArticle ? `<a href="beyond-work-article.html?slug=${encodeURIComponent(prevArticle.slug)}" class="bw-nav-link" style="text-decoration: none; color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-purple)'" onmouseout="this.style.color='var(--text-secondary)'"><span>←</span> <span>Previous Article</span></a>` : '<div></div>'}
+        ${nextArticle ? `<a href="beyond-work-article.html?slug=${encodeURIComponent(nextArticle.slug)}" class="bw-nav-link" style="text-decoration: none; color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-purple)'" onmouseout="this.style.color='var(--text-secondary)'"><span>Next Article</span> <span>→</span></a>` : '<div></div>'}
+      </div>
+    `;
+
+    const bottomNavHTML = `
+      <div class="bw-article-nav" style="display: flex; justify-content: space-between; margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--border-light); gap: 1rem;">
+        ${prevArticle ? `<a href="beyond-work-article.html?slug=${encodeURIComponent(prevArticle.slug)}" class="bw-nav-prev" style="text-decoration: none; color: var(--text-primary); font-weight: 600; display: flex; flex-direction: column; align-items: flex-start; max-width: 48%; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-4px)'" onmouseout="this.style.transform='translateX(0)'">
+          <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-bottom: 0.4rem;">← Previous Article</span>
+          <span style="font-size: 1.05rem; line-height: 1.4;">${prevArticle.title}</span>
+        </a>` : '<div></div>'}
+        ${nextArticle ? `<a href="beyond-work-article.html?slug=${encodeURIComponent(nextArticle.slug)}" class="bw-nav-next" style="text-decoration: none; color: var(--text-primary); font-weight: 600; display: flex; flex-direction: column; align-items: flex-end; max-width: 48%; text-align: right; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
+          <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-bottom: 0.4rem;">Next Article →</span>
+          <span style="font-size: 1.05rem; line-height: 1.4;">${nextArticle.title}</span>
+        </a>` : '<div></div>'}
+      </div>
+    `;
+
     container.innerHTML = `
+      ${topNavHTML}
       <span class="section-tag">${article.category}</span>
       <h1 class="bw-hero-title" style="margin-top:1rem;">${article.title}</h1>
       <p style="color:var(--text-muted); font-size:0.9375rem; margin-bottom:1rem;">${dateStr} · by ${authorNameText}</p>
@@ -212,6 +251,7 @@ async function initSingleArticle() {
       <img src="${article.coverImage || 'assets/profile.png'}" alt="${article.title}" style="width:100%; border-radius:var(--radius-lg); margin-bottom:2.5rem; max-height:480px; object-fit:cover;">
       <div class="bw-article-body">${article.body}</div>
       ${authorHTML}
+      ${bottomNavHTML}
     `;
   } catch (err) {
     container.innerHTML = '<div class="bw-empty-state"><h3>Unable to load article.</h3></div>';
